@@ -23,7 +23,6 @@
  * (or from the year in which this file was created to the year 2007) by
  * Cognizo Technologies, Inc. All Rights Reserved.
  *
- *
  * @package    CATS
  * @subpackage Library
  * @copyright Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
@@ -38,7 +37,8 @@
 class Template
 {
     private $_templateFile;
-    private $_filters = array();
+
+    private $_filters = [];
 
     /**
      * Prints $string with all html special characters converted to &codes;.
@@ -46,7 +46,6 @@ class Template
      * Ex: 'If x < 2 & x > 0, x = 1.' -> 'If x &lt; 2 &amp; x &gt; 0, x = 1.'.
      *
      * @param string input
-     * @return void
      */
     public function _($string)
     {
@@ -59,7 +58,6 @@ class Template
      *
      * @param string property name
      * @param mixed property value
-     * @return void
      */
     public function assign($propertyName, $propertyValue)
     {
@@ -72,11 +70,10 @@ class Template
      *
      * @param string property name
      * @param mixed property value
-     * @return void
      */
     public function assignByReference($propertyName, &$propertyValue)
     {
-        $this->$propertyName =& $propertyValue;
+        $this->$propertyName = &$propertyValue;
     }
 
     /**
@@ -93,14 +90,12 @@ class Template
      * this method. The template filename is relative to index.php.
      *
      * @param string template filename
-     * @return void
      */
     public function display($template)
     {
         /* File existence checking. */
         $file = realpath('./' . $template);
-        if (!$file)
-        {
+        if (! $file) {
             echo 'Template error: File \'', $template, '\' not found.', "\n\n";
             return;
         }
@@ -115,13 +110,11 @@ class Template
         include($this->_templateFile);
         $html = ob_get_clean();
 
-        if (strpos($html, '<!-- NOSPACEFILTER -->') === false && strpos($html, 'textarea') === false)
-        {
+        if (strpos($html, '<!-- NOSPACEFILTER -->') === false && strpos($html, 'textarea') === false) {
             $html = preg_replace('/^\s+/m', '', $html);
         }
 
-        foreach ($this->_filters as $filter)
-        {
+        foreach ($this->_filters as $filter) {
             eval($filter);
         }
 
@@ -137,5 +130,3 @@ class Template
         return $_SESSION['CATS']->getAccessLevel($securedObjectName);
     }
 }
-
-?>

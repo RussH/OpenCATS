@@ -14,54 +14,50 @@
  *
  * @package Artichow
  */
-abstract class awGradient {
+abstract class awGradient
+{
+    /**
+     * From color
+     *
+     * @var Color
+     */
+    public $from;
 
-	/**
-	 * From color
-	 *
-	 * @var Color
-	 */
-	public $from;
+    /**
+     * To color
+     *
+     * @var Color
+     */
+    public $to;
 
-	/**
-	 * To color
-	 *
-	 * @var Color
-	 */
-	public $to;
+    /**
+     * Build the gradient
+     *
+     * @param awColor $from From color
+     * @param awColor $to To color
+     */
+    public function __construct($from, $to)
+    {
+        $this->from = $from;
+        $this->to = $to;
+    }
 
-	/**
-	 * Build the gradient
-	 *
-	 * @param awColor $from From color
-	 * @param awColor $to To color
-	 */
-	public function __construct($from, $to) {
+    /**
+     * Free memory used by the colors of the gradient
+     */
+    public function free()
+    {
+        $this->from->free();
+        $this->to->free();
+    }
 
-		$this->from = $from;
-		$this->to = $to;
-
-	}
-
-	/**
-	 * Free memory used by the colors of the gradient
-	 */
-	public function free() {
-
-		$this->from->free();
-		$this->to->free();
-
-	}
-
-	public function __destruct( ){
-
-		$this->free();
-
-	}
-
+    public function __destruct()
+    {
+        $this->free();
+    }
 }
 
-registerClass('Gradient', TRUE);
+registerClass('Gradient', true);
 
 
 /**
@@ -69,32 +65,31 @@ registerClass('Gradient', TRUE);
  *
  * @package Artichow
  */
-class awLinearGradient extends awGradient {
+class awLinearGradient extends awGradient
+{
+    /**
+     * Gradient angle
+     *
+     * @var int
+     */
+    public $angle;
 
-	/**
-	 * Gradient angle
-	 *
-	 * @var int
-	 */
-	public $angle;
+    /**
+     * Build the linear gradient
+     *
+     * @param awColor $from From color
+     * @param awColor $to To color
+     * @param int $angle Gradient angle
+     */
+    public function __construct($from, $to, $angle)
+    {
+        parent::__construct(
+            $from,
+            $to
+        );
 
-	/**
-	 * Build the linear gradient
-	 *
-	 * @param awColor $from From color
-	 * @param awColor $to To color
-	 * @param int $angle Gradient angle
-	 */
-	public function __construct($from, $to, $angle) {
-
-		parent::__construct(
-			$from, $to
-		);
-
-		$this->angle = $angle;
-
-	}
-
+        $this->angle = $angle;
+    }
 }
 
 registerClass('LinearGradient');
@@ -105,33 +100,33 @@ registerClass('LinearGradient');
  *
  * @package Artichow
  */
-class awBilinearGradient extends awLinearGradient {
+class awBilinearGradient extends awLinearGradient
+{
+    /**
+     * Gradient center
+     *
+     * @var int Center between 0 and 1
+     */
+    public $center;
 
-	/**
-	 * Gradient center
-	 *
-	 * @var int Center between 0 and 1
-	 */
-	public $center;
+    /**
+     * Build the bilinear gradient
+     *
+     * @param awColor $from From color
+     * @param awColor $to To color
+     * @param int $angle Gradient angle
+     * @param int $center Gradient center
+     */
+    public function __construct($from, $to, $angle, $center = 0.5)
+    {
+        parent::__construct(
+            $from,
+            $to,
+            $angle
+        );
 
-	/**
-	 * Build the bilinear gradient
-	 *
-	 * @param awColor $from From color
-	 * @param awColor $to To color
-	 * @param int $angle Gradient angle
-	 * @param int $center Gradient center
-	 */
-	public function __construct($from, $to, $angle, $center = 0.5) {
-
-		parent::__construct(
-			$from, $to, $angle
-		);
-
-		$this->center = $center;
-
-	}
-
+        $this->center = $center;
+    }
 }
 
 registerClass('BilinearGradient');
@@ -141,9 +136,8 @@ registerClass('BilinearGradient');
  *
  * @package Artichow
  */
-class awRadialGradient extends awGradient {
-
+class awRadialGradient extends awGradient
+{
 }
 
 registerClass('RadialGradient');
-?>

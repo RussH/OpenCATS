@@ -162,19 +162,14 @@ $proceed = $proceed && InstallationTests::checkAntiword();
 
 echo '</table>';
 
-if (!$proceed)
-{
+if (! $proceed) {
     echo '<p id="footer_fail">One ore more tests failed. Please fix the problem and refresh this page.</p>';
 
-    if ($warningsOccurred)
-    {
+    if ($warningsOccurred) {
         echo '<p id="footer_warning">One or more tests issued a warning. Once the fatal errors (red) are fixed, you may still proceed, but read the warnings carefully and address them if you can.</p>';
     }
-}
-else
-{
-    if ($warningsOccurred)
-    {
+} else {
+    if ($warningsOccurred) {
         echo '<p id="footer_warning">One or more tests issued a warning. You may still proceed, but read the warnings carefully and address them if you can.</p>';
     }
 

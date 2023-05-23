@@ -3,7 +3,7 @@
  * CATS
  * RSS Display Module
  *
- * CATS Version: 0.9.7-2_TESTING
+ * CATS Version: 0.9.8
  *
  * Copyright (C) 2005 - 2007 Cognizo Technologies, Inc.
  *
@@ -36,5 +36,3 @@ $rssPage = true;
 chdir('..');
 include_once(LEGACY_ROOT . '/lib/CATSUtility.php');
 include_once(CATSUtility::getIndexName());
-
-?>

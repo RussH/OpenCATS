@@ -33,9 +33,8 @@ include_once(LEGACY_ROOT . '/lib/DataGrid.php');
 
 $interface = new SecureAJAXInterface();
 
-if (!isset($_REQUEST['p']) ||
-    !isset($_REQUEST['i']))
-{
+if (! isset($_REQUEST['p']) ||
+    ! isset($_REQUEST['i'])) {
     $interface->outputXMLErrorPage(-1, 'Invalid input.');
     die();
 }
@@ -44,12 +43,9 @@ $indentifier = $_REQUEST['i'];
 $parameters = json_decode($_REQUEST['p']);
 
 /* Handle dynamicArgument if it is set. */
-if (isset($_REQUEST['dynamicArgument']))
-{
-    foreach ($parameters as $index => $data)
-    {
-        if ($data === '<dynamic>')
-        {
+if (isset($_REQUEST['dynamicArgument'])) {
+    foreach ($parameters as $index => $data) {
+        if ($data === '<dynamic>') {
             $parameters[$index] = $_REQUEST['dynamicArgument'];
         }
     }
@@ -59,5 +55,3 @@ $dataGrid = DataGrid::get($indentifier, $parameters);
 
 $dataGrid->draw(true);
 $dataGrid->drawUpdatedNavigation(true);
-
-?>
