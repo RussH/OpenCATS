@@ -2315,7 +2315,8 @@ class CandidatesDataGrid extends DataGrid
                                          SELECT t1.candidate_id tags FROM candidate t1
                                          LEFT JOIN candidate_tag t2 ON t1.candidate_id = t2.candidate_id
                                          WHERE t2.site_id = 1 AND t2.tag_id IN (". implode(",",$arguments)."))";
-                                     ', ],
+                                     ',
+            ],
         ];
 
         if (US_ZIPS_ENABLED) {

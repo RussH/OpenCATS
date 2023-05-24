@@ -521,7 +521,6 @@ class awLabel implements awPositionable
             $x = $p->x;
             $y = $p->y;
 
-            
             list($left, $right, $top, $bottom) = $text->getPadding();
 
             $font = $text->getFont();
@@ -605,7 +604,6 @@ class awLabel implements awPositionable
             $x = $p->x;
             $y = $p->y;
 
-            
             list($left, $right, $top, $bottom) = $text->getPadding();
 
             $font = $text->getFont();

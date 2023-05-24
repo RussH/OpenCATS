@@ -458,8 +458,6 @@ abstract class awPlot extends awComponent
         $this->xAxis->line->setX($x1, $x2);
         $this->yAxis->line->setY($y2, $y1);
 
-        
-
         $this->xAxis->tick('major')->setNumber($this->getXAxisNumber());
         $this->yAxis->tick('major')->setNumber($this->yAxis->getLabelNumber());
 
@@ -623,7 +621,6 @@ abstract class awPlot extends awComponent
         $this->checkArray($datax);
 
         if (count($datay) === count($datax)) {
-            
             $this->datay = $datay;
             $this->datax = $datax;
             // Update axis with the new awvalues
@@ -1178,8 +1175,6 @@ class awPlotGroup extends awComponentGroup
         if ($this->axis->bottom->label->count() === 0) {
             $this->axis->bottom->label->set($labels);
         }
-
-        
 
         $this->axis->top->tick('major')->setNumber($values);
         $this->axis->bottom->tick('major')->setNumber($values);

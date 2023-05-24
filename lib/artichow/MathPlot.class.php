@@ -208,7 +208,6 @@ class awMathPlot extends awComponent
         // Hide grid by default
         $this->grid->hide(true);
 
-        
         $this->extremum = new awSide($xMin, $xMax, $yMax, $yMin);
 
         // Create axis
@@ -286,8 +285,6 @@ class awMathPlot extends awComponent
             $number = $this->extremum->right - $this->extremum->left + 1;
             $this->xAxis->setLabelNumber($number);
         }
-
-        
 
         $this->xAxis->tick('major')->setNumber($this->xAxis->getLabelNumber());
         $this->yAxis->tick('major')->setNumber($this->yAxis->getLabelNumber());

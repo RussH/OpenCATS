@@ -146,14 +146,14 @@ class DocumentToText
                 break;
 
             case DOCUMENT_TYPE_RTF:
-            $this->_rawOutput = $this->rtf2text($fileName);
-            if ($this->_rawOutput == null) {
-                return false;
-            }
-            $this->_linesString = $this->_rawOutput;
+                $this->_rawOutput = $this->rtf2text($fileName);
+                if ($this->_rawOutput == null) {
+                    return false;
+                }
+                $this->_linesString = $this->_rawOutput;
 
-            return true;
-            break;
+                return true;
+                break;
 
             case DOCUMENT_TYPE_ODT:
                 $this->_rawOutput = $this->odt2text($filename);

@@ -729,7 +729,6 @@ class CareersUI extends UserInterface
             } else {
                 ob_start();
 
-                
                 $questions = $questionnaireLib->getQuestions($questionnaireID);
 
                 $this->_template->assign('isModal', true);
