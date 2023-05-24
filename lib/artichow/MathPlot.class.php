@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__) . "/Component.class.php";
+require_once __DIR__ . "/Component.class.php";
 
 /**
  * A mathematic function
@@ -260,7 +260,7 @@ class awMathPlot extends awComponent
 
     public function init(awDrawer $drawer)
     {
-        list($x1, $y1, $x2, $y2) = $this->getPosition();
+        [$x1, $y1, $x2, $y2] = $this->getPosition();
 
         $this->xAxis->line->setX($x1, $x2);
         $this->xAxis->label->setAlign(null, awLabel::BOTTOM);

@@ -245,7 +245,7 @@ class awGrid
         $hInterval,
         $vInterval
     ) {
-        list($left, $right, $top, $bottom) = $space;
+        [$left, $right, $top, $bottom] = $space;
 
         $width = $x2 - $x1 - $left - $right;
         $height = $y2 - $y1 - $top - $bottom;

@@ -421,7 +421,7 @@ class awLegend implements awPositionable
         $heights = [];
         $texts = [];
         for ($i = 0; $i < $count; $i++) {
-            list(, $title) = $this->legends[$i];
+            [, $title] = $this->legends[$i];
             $text = new awText(
                 $title,
                 $this->textFont,
@@ -469,7 +469,7 @@ class awLegend implements awPositionable
         $height = ($heightMax + $this->space) * $rows - $this->space + $this->padding[2] + $this->padding[3];
 
         // Look for legends position
-        list($x, $y) = $drawer->getSize();
+        [$x, $y] = $drawer->getSize();
 
         $p = new awPoint(
             $this->position->x * $x,
@@ -509,7 +509,7 @@ class awLegend implements awPositionable
 
         // Draw each legend
         for ($i = 0; $i < $count; $i++) {
-            list($component, $title, $type) = $this->legends[$i];
+            [$component, $title, $type] = $this->legends[$i];
 
             $column = $i % $columns;
             $row = (int) floor($i / $columns);

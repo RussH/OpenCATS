@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__) . "/Plot.class.php";
+require_once __DIR__ . "/Plot.class.php";
 
 
 /**
@@ -237,7 +237,7 @@ class awLinePlot extends awPlot implements awLegendable
         $min = $this->getRealYMin();
 
         // Get start and stop values
-        list($start, $stop) = $this->getLimit();
+        [$start, $stop] = $this->getLimit();
 
         if ($this->lineMode === awLinePlot::MIDDLE) {
             $inc = $this->xAxis->getDistance(0, 1) / 2;
@@ -319,13 +319,13 @@ class awLinePlot extends awPlot implements awLegendable
     {
         $starts = [];
         foreach ($this->areas as $area) {
-            list($start) = $area;
+            [$start] = $area;
             $starts[$start] = true;
         }
 
         // Draw filled areas
         foreach ($this->areas as $area) {
-            list($start, $stop, $background) = $area;
+            [$start, $stop, $background] = $area;
 
             $polygonArea = new awPolygon();
 

@@ -335,7 +335,7 @@ class awAxis
         if (is_array($texts)) {
             $this->auto(false);
             $this->label->setCallbackFunction(function ($value) use ($texts) {
-                return isset($texts[$value]) ? $texts[$value] : '?';
+                return $texts[$value] ?? '?';
             });
         }
     }
@@ -536,7 +536,7 @@ class awAxis
     {
         $callback = $this->rangeCallback['toPosition'];
 
-        list($min, $max) = $this->range;
+        [$min, $max] = $this->range;
         if ($this->forcedMax !== null && $this->forcedMax > $max) {
             $max = $this->forcedMax;
         }
@@ -593,11 +593,13 @@ class awAxis
 
     public function autoScale()
     {
+        $intervalReal = null;
+        $labelNumber = null;
         if ($this->isAuto() === false) {
             return;
         }
 
-        list($min, $max) = $this->getRange();
+        [$min, $max] = $this->getRange();
         $interval = $max - $min;
 
         if ($interval < 1) {
@@ -610,7 +612,7 @@ class awAxis
         $difference = log($interval) / log(10);
         $difference = floor($difference);
 
-        $pow = pow(10, $difference);
+        $pow = 10 ** $difference;
 
         $intervalNormalize = $interval / $pow;
 
@@ -687,7 +689,7 @@ class awAxis
     protected function drawLabels($drawer)
     {
         if ($this->labelNumber !== null) {
-            list($min, $max) = $this->range;
+            [$min, $max] = $this->range;
             $number = $this->labelNumber - 1;
             if ($number < 1) {
                 return;

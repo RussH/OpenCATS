@@ -20,10 +20,10 @@ return static function (RectorConfig $rectorConfig): void {
 //        'var/www/html/OpenCATS/docker',
 //        'var/www/html/OpenCATS/test',
 //        'var/www/html/OpenCATS/src',
-        '/var/www/html/OpenCATS/lib/artichow',
-        '/var/www/html/OpenCATS/lib/fpdf',
-        '/var/www/html/OpenCATS/lib/simpletest',
-        '/var/www/html/OpenCATS/lib/sphinx',
+//        '/var/www/html/OpenCATS/lib/artichow',
+//        '/var/www/html/OpenCATS/lib/fpdf',
+//        '/var/www/html/OpenCATS/lib/simpletest',
+//        '/var/www/html/OpenCATS/lib/sphinx',
 
     ]);
 

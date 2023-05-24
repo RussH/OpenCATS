@@ -154,7 +154,7 @@ class SphinxClient
         }
 
         // check version
-        list(, $v) = unpack("N*", fread($fp, 4));
+        [, $v] = unpack("N*", fread($fp, 4));
         $v = (int) $v;
         if ($v < 1) {
             fclose($fp);
@@ -171,7 +171,7 @@ class SphinxClient
     public function _GetResponse($fp, $client_ver)
     {
         $header = fread($fp, 8);
-        list($status, $ver, $len) = array_values(unpack("n2a/Nb", $header));
+        [$status, $ver, $len] = array_values(unpack("n2a/Nb", $header));
         $response = "";
         $left = $len;
         while ($left > 0 && ! feof($fp)) {
@@ -194,7 +194,7 @@ class SphinxClient
 
         // check status
         if ($status == SEARCHD_WARNING) {
-            list(, $wlen) = unpack("N*", substr($response, 0, 4));
+            [, $wlen] = unpack("N*", substr($response, 0, 4));
             $this->_warning = substr($response, 4, $wlen);
             return substr($response, 4 + $wlen);
         }
@@ -416,7 +416,7 @@ class SphinxClient
         $req = pack("NNNN", $this->_offset, $this->_limit, $this->_mode, $this->_sort); // mode and limits
         $req .= pack("N", strlen($this->_sortby)) . $this->_sortby;
         $req .= pack("N", strlen($query)) . $query; // query itself
-        $req .= pack("N", count($this->_weights)); // weights
+        $req .= pack("N", is_array($this->_weights) || $this->_weights instanceof \Countable ? count($this->_weights) : 0); // weights
         foreach ($this->_weights as $weight) {
             $req .= pack("N", (int) $weight);
         }
@@ -426,11 +426,11 @@ class SphinxClient
             pack("N", (int) $this->_max_id);
 
         // filters
-        $req .= pack("N", count($this->_filters));
+        $req .= pack("N", is_array($this->_filters) || $this->_filters instanceof \Countable ? count($this->_filters) : 0);
         foreach ($this->_filters as $filter) {
             $req .= pack("N", strlen($filter["attr"])) . $filter["attr"];
             if (isset($filter["values"])) {
-                $req .= pack("N", count($filter["values"]));
+                $req .= pack("N", is_array($filter["values"]) || $filter["values"] instanceof \Countable ? count($filter["values"]) : 0);
                 foreach ($filter["values"] as $value) {
                     $req .= pack("N", $value);
                 }
@@ -468,36 +468,36 @@ class SphinxClient
         $fields = [];
         $attrs = [];
 
-        list(, $nfields) = unpack("N*", substr($response, $p, 4));
+        [, $nfields] = unpack("N*", substr($response, $p, 4));
         $p += 4;
         while ($nfields-- > 0 && $p < $max) {
-            list(, $len) = unpack("N*", substr($response, $p, 4));
+            [, $len] = unpack("N*", substr($response, $p, 4));
             $p += 4;
             $fields[] = substr($response, $p, $len);
             $p += $len;
         }
         $result["fields"] = $fields;
 
-        list(, $nattrs) = unpack("N*", substr($response, $p, 4));
+        [, $nattrs] = unpack("N*", substr($response, $p, 4));
         $p += 4;
         while ($nattrs-- > 0 && $p < $max) {
-            list(, $len) = unpack("N*", substr($response, $p, 4));
+            [, $len] = unpack("N*", substr($response, $p, 4));
             $p += 4;
             $attr = substr($response, $p, $len);
             $p += $len;
-            list(, $type) = unpack("N*", substr($response, $p, 4));
+            [, $type] = unpack("N*", substr($response, $p, 4));
             $p += 4;
             $attrs[$attr] = $type;
         }
         $result["attrs"] = $attrs;
 
         // read match count
-        list(, $count) = unpack("N*", substr($response, $p, 4));
+        [, $count] = unpack("N*", substr($response, $p, 4));
         $p += 4;
 
         // read matches
         while ($count-- > 0 && $p < $max) {
-            list($doc, $weight) = array_values(unpack(
+            [$doc, $weight] = array_values(unpack(
                 "N*N*",
                 substr($response, $p, 8)
             ));
@@ -508,12 +508,12 @@ class SphinxClient
 
             $result["matches"][$doc]["weight"] = $weight;
             foreach ($attrs as $attr => $type) {
-                list(, $val) = unpack("N*", substr($response, $p, 4));
+                [, $val] = unpack("N*", substr($response, $p, 4));
                 $p += 4;
                 $result["matches"][$doc]["attrs"][$attr] = sprintf("%u", $val);
             }
         }
-        list($total, $total_found, $msecs, $words) =
+        [$total, $total_found, $msecs, $words] =
             array_values(unpack("N*N*N*N*", substr($response, $p, 16)));
         $result["total"] = sprintf("%u", $total);
         $result["total_found"] = sprintf("%u", $total_found);
@@ -521,11 +521,11 @@ class SphinxClient
         $p += 16;
 
         while ($words-- > 0) {
-            list(, $len) = unpack("N*", substr($response, $p, 4));
+            [, $len] = unpack("N*", substr($response, $p, 4));
             $p += 4;
             $word = substr($response, $p, $len);
             $p += $len;
-            list($docs, $hits) = array_values(unpack("N*N*", substr($response, $p, 8)));
+            [$docs, $hits] = array_values(unpack("N*N*", substr($response, $p, 8)));
             $p += 8;
             $result["words"][$word] = [
                 "docs" => sprintf("%u", $docs),
@@ -633,7 +633,7 @@ class SphinxClient
         $res = [];
         $rlen = strlen($response);
         for ($i = 0; $i < count($docs); $i++) {
-            list(, $len) = unpack("N*", substr($response, $pos, 4));
+            [, $len] = unpack("N*", substr($response, $pos, 4));
             $pos += 4;
 
             if ($pos + $len > $rlen) {
@@ -665,6 +665,7 @@ class SphinxClient
     ///		$cl->UpdateAttributes ( array("group"), array(123=>array(456)) );
     public function UpdateAttributes($index, $attrs, $values)
     {
+        $p = null;
         // verify everything
         assert(is_string($index));
 
@@ -713,7 +714,7 @@ class SphinxClient
         }
 
         // parse response
-        list(, $updated) = unpack("N*", substr($response, $p, 4));
+        [, $updated] = unpack("N*", substr($response, $p, 4));
         return $updated;
     }
 }

@@ -11,7 +11,7 @@
  * Path to Artichow
  */
 
-define('ARTICHOW', dirname(__FILE__));
+define('ARTICHOW', __DIR__);
 
 
 /*

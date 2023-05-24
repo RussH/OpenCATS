@@ -868,7 +868,7 @@ class ControlPanel
         }
 
         $sql = $this->getTablesSQL($searchSql, $limitSql);
-        $rs = $this->_db->query($sql, $pager_ResultsPerPage, $pager_CurrentPage);
+        $rs = $this->_db->query($sql, $pager_ResultsPerPage);
         if (! $rs) {
             echo $sql;
             return $this->getException('Unable to view', 'We\'re sorry, but an internal error has occurred and '

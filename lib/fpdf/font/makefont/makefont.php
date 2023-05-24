@@ -8,7 +8,7 @@
 function ReadMap($enc)
 {
     //Read a map file
-    $file = dirname(__FILE__) . '/' . strtolower($enc) . '.map';
+    $file = __DIR__ . '/' . strtolower($enc) . '.map';
     $a = file($file);
     if (empty($a)) {
         die('<B>Error:</B> encoding not found: ' . $enc);
@@ -159,11 +159,12 @@ function ReadAFM($file, &$map)
 
 function MakeFontDescriptor($fm, $symbolic)
 {
+    $des = null;
     //Ascent
-    $asc = (isset($fm['Ascender']) ? $fm['Ascender'] : 1000);
+    $asc = ($fm['Ascender'] ?? 1000);
     $fd = "array('Ascent'=>" . $asc;
     //Descent
-    $desc = (isset($fm['Descender']) ? $fm['Descender'] : -200);
+    $desc = ($fm['Descender'] ?? -200);
     $fd .= ",'Descent'=>" . $desc;
     //CapHeight
     if (isset($fm['CapHeight'])) {
@@ -197,7 +198,7 @@ function MakeFontDescriptor($fm, $symbolic)
     }
     $fd .= ",'FontBBox'=>'[" . $fbb[0] . ' ' . $fbb[1] . ' ' . $fbb[2] . ' ' . $fbb[3] . "]'";
     //ItalicAngle
-    $ia = (isset($fm['ItalicAngle']) ? $fm['ItalicAngle'] : 0);
+    $ia = ($fm['ItalicAngle'] ?? 0);
     $fd .= ",'ItalicAngle'=>" . $ia;
     //StemV
     if (isset($fm['StdVW'])) {
@@ -331,6 +332,8 @@ function CheckTTF($file)
 *******************************************************************************/
 function MakeFont($fontfile, $afmfile, $enc = 'cp1252', $patch = [], $type = 'TrueType')
 {
+    $size1 = null;
+    $size2 = null;
     //Generate a font definition file
     if (function_exists('set_magic_quotes_runtime')) {
         set_magic_quotes_runtime(0);

@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__) . "/Component.class.php";
+require_once __DIR__ . "/Component.class.php";
 
 
 /**
@@ -188,7 +188,7 @@ abstract class awPlot extends awComponent
      */
     public function reduce($number)
     {
-        $count = count($this->datay);
+        $count = count((array) $this->datay);
         $ratio = ceil($count / $number);
 
         if ($ratio > 1) {
@@ -223,7 +223,7 @@ abstract class awPlot extends awComponent
      */
     public function getXAxisNumber()
     {
-        list($min, $max) = $this->xAxis->getRange();
+        [$min, $max] = $this->xAxis->getRange();
         return ($max - $min + 1);
     }
 
@@ -429,15 +429,15 @@ abstract class awPlot extends awComponent
 
     public function init(awDrawer $drawer)
     {
-        list($x1, $y1, $x2, $y2) = $this->getPosition();
+        [$x1, $y1, $x2, $y2] = $this->getPosition();
 
         // Get space informations
-        list($leftSpace, $rightSpace, $topSpace, $bottomSpace) = $this->getSpace($x2 - $x1, $y2 - $y1);
+        [$leftSpace, $rightSpace, $topSpace, $bottomSpace] = $this->getSpace($x2 - $x1, $y2 - $y1);
 
         $this->xAxis->setPadding($leftSpace, $rightSpace);
 
         if ($this->space->bottom > 0 or $this->space->top > 0) {
-            list($min, $max) = $this->yAxis->getRange();
+            [$min, $max] = $this->yAxis->getRange();
             $interval = $max - $min;
 
             $this->yAxis->setRange(
@@ -480,9 +480,9 @@ abstract class awPlot extends awComponent
 
         parent::init($drawer);
 
-        list($x1, $y1, $x2, $y2) = $this->getPosition();
+        [$x1, $y1, $x2, $y2] = $this->getPosition();
 
-        list($leftSpace, $rightSpace) = $this->getSpace($x2 - $x1, $y2 - $y1);
+        [$leftSpace, $rightSpace] = $this->getSpace($x2 - $x1, $y2 - $y1);
 
         // Create the grid
         $this->createGrid();
@@ -494,7 +494,7 @@ abstract class awPlot extends awComponent
 
     public function drawEnvelope(awDrawer $drawer)
     {
-        list($x1, $y1, $x2, $y2) = $this->getPosition();
+        [$x1, $y1, $x2, $y2] = $this->getPosition();
 
         if ($this->getXCenter()) {
             $size = $this->xAxis->getDistance(0, 1);
@@ -608,7 +608,7 @@ abstract class awPlot extends awComponent
 
         if ($datax === null) {
             $datax = [];
-            for ($i = 0; $i < count($datay); $i++) {
+            for ($i = 0; $i < (is_array($datay) || $datay instanceof \Countable ? count($datay) : 0); $i++) {
                 $datax[] = $i;
             }
         } else {
@@ -620,7 +620,7 @@ abstract class awPlot extends awComponent
 
         $this->checkArray($datax);
 
-        if (count($datay) === count($datax)) {
+        if ((is_array($datay) || $datay instanceof \Countable ? count($datay) : 0) === (is_array($datax) || $datax instanceof \Countable ? count($datax) : 0)) {
             $this->datay = $datay;
             $this->datax = $datax;
             // Update axis with the new awvalues
@@ -642,7 +642,7 @@ abstract class awPlot extends awComponent
             $i++;
         }
         $start = $i;
-        $i = count($this->datay) - 1;
+        $i = count((array) $this->datay) - 1;
         while (array_key_exists($i, $this->datay) and $this->datay[$i] === null) {
             $i--;
         }
@@ -971,7 +971,7 @@ class awPlotGroup extends awComponentGroup
         $value = null;
         $get = 'getX' . ucfirst($type);
 
-        for ($i = 0; $i < count($this->components); $i++) {
+        for ($i = 0; $i < (is_array($this->components) || $this->components instanceof \Countable ? count($this->components) : 0); $i++) {
             $component = $this->components[$i];
 
             if ($value === null) {
@@ -1048,7 +1048,7 @@ class awPlotGroup extends awComponentGroup
         $value = null;
         $get = 'getY' . ucfirst($type);
 
-        for ($i = 0; $i < count($this->components); $i++) {
+        for ($i = 0; $i < (is_array($this->components) || $this->components instanceof \Countable ? count($this->components) : 0); $i++) {
             $component = $this->components[$i];
 
             switch ($axis) {
@@ -1074,10 +1074,10 @@ class awPlotGroup extends awComponentGroup
 
     public function init(awDrawer $drawer)
     {
-        list($x1, $y1, $x2, $y2) = $this->getPosition();
+        [$x1, $y1, $x2, $y2] = $this->getPosition();
 
         // Get PlotGroup space
-        list($leftSpace, $rightSpace, $topSpace, $bottomSpace) = $this->getSpace($x2 - $x1, $y2 - $y1);
+        [$leftSpace, $rightSpace, $topSpace, $bottomSpace] = $this->getSpace($x2 - $x1, $y2 - $y1);
 
         // Count values in the group
         $values = $this->getXAxisNumber();
@@ -1097,7 +1097,7 @@ class awPlotGroup extends awComponentGroup
         $this->axis->top->setRange($xMin, $xMax);
         $this->axis->bottom->setRange($xMin, $xMax);
 
-        for ($i = 0; $i < count($this->components); $i++) {
+        for ($i = 0; $i < (is_array($this->components) || $this->components instanceof \Countable ? count($this->components) : 0); $i++) {
             $component = $this->components[$i];
 
             $component->auto($this->auto);
@@ -1146,7 +1146,7 @@ class awPlotGroup extends awComponentGroup
             awPlot::BOTTOM => false,
         ];
 
-        for ($i = 0; $i < count($this->components); $i++) {
+        for ($i = 0; $i < (is_array($this->components) || $this->components instanceof \Countable ? count($this->components) : 0); $i++) {
             $component = $this->components[$i];
 
             if ($component->getValues() !== null) {
@@ -1197,7 +1197,7 @@ class awPlotGroup extends awComponentGroup
 
         parent::init($drawer);
 
-        list($leftSpace, $rightSpace, $topSpace, $bottomSpace) = $this->getSpace($x2 - $x1, $y2 - $y1);
+        [$leftSpace, $rightSpace, $topSpace, $bottomSpace] = $this->getSpace($x2 - $x1, $y2 - $y1);
 
         // Create the grid
         $this->createGrid();
@@ -1224,12 +1224,12 @@ class awPlotGroup extends awComponentGroup
 
             // Set component minimum and maximum
             if ($component->getYAxis() === awPlot::LEFT) {
-                list($min, $max) = $this->axis->left->getRange();
+                [$min, $max] = $this->axis->left->getRange();
 
                 $component->setYMin($min);
                 $component->setYMax($max);
             } else {
-                list($min, $max) = $this->axis->right->getRange();
+                [$min, $max] = $this->axis->right->getRange();
 
                 $component->setYMin($min);
                 $component->setYMax($max);
@@ -1256,7 +1256,7 @@ class awPlotGroup extends awComponentGroup
 
     public function drawEnvelope(awDrawer $drawer)
     {
-        list($x1, $y1, $x2, $y2) = $this->getPosition();
+        [$x1, $y1, $x2, $y2] = $this->getPosition();
 
         // Hide unused axis
         foreach ([awPlot::LEFT, awPlot::RIGHT, awPlot::TOP, awPlot::BOTTOM] as $axis) {
@@ -1302,7 +1302,7 @@ class awPlotGroup extends awComponentGroup
      */
     protected function isAxisUsed($axis)
     {
-        for ($i = 0; $i < count($this->components); $i++) {
+        for ($i = 0; $i < (is_array($this->components) || $this->components instanceof \Countable ? count($this->components) : 0); $i++) {
             $component = $this->components[$i];
 
             switch ($axis) {
@@ -1393,7 +1393,7 @@ class awPlotGroup extends awComponentGroup
     {
         $offset = $this->components[0];
         $max = $offset->getXAxisNumber();
-        for ($i = 1; $i < count($this->components); $i++) {
+        for ($i = 1; $i < (is_array($this->components) || $this->components instanceof \Countable ? count($this->components) : 0); $i++) {
             $offset = $this->components[$i];
             $max = max($max, $offset->getXAxisNumber());
         }

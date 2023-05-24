@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__) . "/Component.class.php";
+require_once __DIR__ . "/Component.class.php";
 
 
 /**
@@ -358,7 +358,7 @@ class awPie extends awComponent
                 $position, ($position + $angle), $explode,
             ];
 
-            $color = $this->colors[$key % count($this->colors)];
+            $color = $this->colors[$key % count((array) $this->colors)];
             $parts[$key] = new awPiePart($color);
 
             // Add part to the legend
@@ -395,10 +395,10 @@ class awPie extends awComponent
         // Draw 3D effect
         for ($i = $this->size; $i > 0; $i--) {
             foreach ($values as $key => $value) {
-                $color = clone $this->colors[$key % count($this->colors)];
+                $color = clone $this->colors[$key % count((array) $this->colors)];
                 $color->brightness(-50);
 
-                list($from, $to, $explode) = $value;
+                [$from, $to, $explode] = $value;
 
                 $drawer->filledArc($color, $explode->move($x, $y + $i), $width, $height, $from, $to);
 
@@ -416,9 +416,9 @@ class awPie extends awComponent
         }
 
         foreach ($values as $key => $value) {
-            $color = $this->colors[$key % count($this->colors)];
+            $color = $this->colors[$key % count((array) $this->colors)];
 
-            list($from, $to, $explode) = $value;
+            [$from, $to, $explode] = $value;
 
             $drawer->filledArc($color, $explode->move($x, $y), $width, $height, $from, $to);
 
@@ -478,7 +478,7 @@ class awPie extends awComponent
 
             $position++;
 
-            list($from, $to, $explode) = $values[$key];
+            [$from, $to, $explode] = $values[$key];
 
             $angle = $from + ($to - $from) / 2;
             $angleRad = (360 - $angle) * M_PI / 180;
@@ -564,7 +564,7 @@ class awPie extends awComponent
             }
         }
 
-        if (count($array) < 1) {
+        if ((is_array($array) || $array instanceof \Countable ? count($array) : 0) < 1) {
             trigger_error("Your graph must have at least 1 value");
         }
     }

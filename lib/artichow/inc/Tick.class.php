@@ -241,7 +241,7 @@ class awTick
     public function draw(awDrawer $drawer, awVector $vector, $dashboardImageMode = false)
     {
         if ($this->numberByTick !== null) {
-            list($tick, $number) = $this->numberByTick;
+            [$tick, $number] = $this->numberByTick;
             $this->number = 1 + ($tick->getNumber() - 1) * ($number + 1);
             $this->interval = $tick->getInterval();
         }

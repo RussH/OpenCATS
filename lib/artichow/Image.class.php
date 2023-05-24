@@ -273,7 +273,7 @@ class awImage
 
         // No absolute size specified
         if ($component->w === null and $component->h === null) {
-            list($width, $height) = $drawer->setSize($component->width, $component->height);
+            [$width, $height] = $drawer->setSize($component->width, $component->height);
 
             // Set component size in pixels
             $component->setAbsSize($width, $height);
@@ -292,12 +292,12 @@ class awImage
 
         $drawer->movePosition($border + $shadow->left, $border + $shadow->top);
 
-        list($x1, $y1, $x2, $y2) = $component->getPosition();
+        [$x1, $y1, $x2, $y2] = $component->getPosition();
 
         $component->init($drawer);
 
         $component->drawComponent($drawer, $x1, $y1, $x2, $y2, $this->antiAliasing);
-        $component->drawEnvelope($drawer, $x1, $y1, $x2, $y2);
+        $component->drawEnvelope($drawer);
 
         $component->finalize($drawer);
     }
@@ -321,6 +321,7 @@ class awImage
      */
     public function send($file = null)
     {
+        $function = null;
         // Test if format is available
         if ((imagetypes() & $this->format) === false) {
             trigger_error("Format '" . $this->format . "' is not available on your system. Check that your PHP has been compiled with the good libraries.");

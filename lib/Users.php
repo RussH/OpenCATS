@@ -825,7 +825,7 @@ class Users
 
         if ((AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap')
             && (($existsInDB && $rs['password'] == LDAPUSER_PASSWORD) || ! $existsInDB)) {
-            $this->_ldap = LDAP::getInstance($username, $password);
+            $this->_ldap = LDAP::getInstance();
             if ($this->_ldap == null) {
                 return LOGIN_INVALID_USER;
             }

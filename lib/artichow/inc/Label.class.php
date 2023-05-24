@@ -506,7 +506,7 @@ class awLabel implements awPositionable
         }
 
         // Hide last label
-        if (is_array($this->texts) && $key === count($this->texts) - 1 and $this->hideLast) {
+        if (is_array($this->texts) && $key === count((array) $this->texts) - 1 and $this->hideLast) {
             return;
         }
 
@@ -521,7 +521,7 @@ class awLabel implements awPositionable
             $x = $p->x;
             $y = $p->y;
 
-            list($left, $right, $top, $bottom) = $text->getPadding();
+            [$left, $right, $top, $bottom] = $text->getPadding();
 
             $font = $text->getFont();
             $width = $font->getTextWidth($text);
@@ -589,7 +589,7 @@ class awLabel implements awPositionable
         }
 
         // Hide last label
-        if ($key === count($this->texts) - 1 and $this->hideLast) {
+        if ($key === count((array) $this->texts) - 1 and $this->hideLast) {
             return;
         }
 
@@ -604,7 +604,7 @@ class awLabel implements awPositionable
             $x = $p->x;
             $y = $p->y;
 
-            list($left, $right, $top, $bottom) = $text->getPadding();
+            [$left, $right, $top, $bottom] = $text->getPadding();
 
             $font = $text->getFont();
             $width = $font->getTextWidth($text);

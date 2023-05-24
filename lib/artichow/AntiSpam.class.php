@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__) . "/Graph.class.php";
+require_once __DIR__ . "/Graph.class.php";
 
 /**
  * AntiSpam
@@ -59,7 +59,7 @@ class awAntiSpam extends awImage
         $number = strlen($letters);
 
         for ($i = 0; $i < $length; $i++) {
-            $this->string .= $letters{mt_rand(0, $number - 1)};
+            $this->string .= $letters{random_int(0, $number - 1)};
         }
 
         return $this->string;
@@ -152,7 +152,7 @@ class awAntiSpam extends awImage
                 $this->string{$i},
                 $font,
                 null,
-                mt_rand(-15, 15)
+                random_int(-15, 15)
             );
 
             $widths[] = $font->getTextWidth($text);
@@ -194,8 +194,8 @@ class awAntiSpam extends awImage
             $this->drawer->point(
                 $color,
                 new awPoint(
-                    mt_rand(0, $width),
-                    mt_rand(0, $height)
+                    random_int(0, $width),
+                    random_int(0, $height)
                 )
             );
         }

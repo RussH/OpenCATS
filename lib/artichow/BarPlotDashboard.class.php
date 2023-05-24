@@ -7,7 +7,7 @@
  *
  */
 
-require_once dirname(__FILE__) . "/Plot.class.php";
+require_once __DIR__ . "/Plot.class.php";
 
 /**
  * BarPlot
@@ -269,8 +269,8 @@ class awBarPlotDashboard extends awPlot implements awLegendable
         }
 
         $count = count($this->datay);
-        $max = $this->getRealYMax(null);
-        $min = $this->getRealYMin(null);
+        $max = $this->getRealYMax();
+        $min = $this->getRealYMin();
 
         // Find zero for bars
         if ($this->xAxisZero and $min <= 0 and $max >= 0) {

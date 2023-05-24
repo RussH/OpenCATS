@@ -206,7 +206,7 @@ class awPoint extends awShape
      */
     public function getDistance(awPoint $p)
     {
-        return sqrt(pow($p->x - $this->x, 2) + pow($p->y - $this->y, 2));
+        return sqrt(($p->x - $this->x) ** 2 + ($p->y - $this->y) ** 2);
     }
 
     /**
@@ -335,7 +335,7 @@ class awLine extends awShape
      */
     public function getSize()
     {
-        $square = pow($this->p2->x - $this->p1->x, 2) + pow($this->p2->y - $this->p1->y, 2);
+        $square = ($this->p2->x - $this->p1->x) ** 2 + ($this->p2->y - $this->p1->y) ** 2;
         return sqrt($square);
     }
 

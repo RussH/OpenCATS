@@ -276,7 +276,7 @@ class awMark
 
     protected function drawSquare(awPoint $point)
     {
-        list($x, $y) = $point->getLocation();
+        [$x, $y] = $point->getLocation();
 
         $x1 = (int) ($x - $this->size / 2);
         $x2 = $x1 + $this->size;
@@ -302,7 +302,7 @@ class awMark
             $width = $this->image->width;
             $height = $this->image->height;
 
-            list($x, $y) = $point->getLocation();
+            [$x, $y] = $point->getLocation();
 
             $x1 = (int) ($x - $width / 2);
             $x2 = $x1 + $width;

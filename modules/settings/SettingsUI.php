@@ -2072,9 +2072,7 @@ class SettingsUI extends UserInterface
                 '',
                 '',
                 '',
-                'Internal postings.',
-                $this->_userID,
-                $this->_userID
+                'Internal postings.'
             );
 
             $companies->setCompanyDefault($companyIDInternal);
@@ -2973,9 +2971,7 @@ class SettingsUI extends UserInterface
             '',
             '',
             '',
-            'Internal postings.',
-            $this->_userID,
-            $this->_userID
+            'Internal postings.'
         );
 
         $companies->setCompanyDefault($companyIDInternal);

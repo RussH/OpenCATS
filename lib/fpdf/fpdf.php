@@ -548,6 +548,8 @@ if (! class_exists('FPDF')) {
 
         public function AddFont($family, $style = '', $file = '')
         {
+            $diff = null;
+            $type = null;
             //Add a TrueType or Type1 font
             $family = strtolower($family);
             if ($file == '') {
@@ -568,7 +570,7 @@ if (! class_exists('FPDF')) {
             if (! isset($name)) {
                 $this->Error('Could not include font definition file');
             }
-            $i = count($this->fonts) + 1;
+            $i = (is_array($this->fonts) || $this->fonts instanceof \Countable ? count($this->fonts) : 0) + 1;
             $this->fonts[$fontkey] = [
                 'i' => $i,
                 'type' => $type,
@@ -583,7 +585,7 @@ if (! class_exists('FPDF')) {
             if ($diff) {
                 //Search existing encodings
                 $d = 0;
-                $nb = count($this->diffs);
+                $nb = is_array($this->diffs) || $this->diffs instanceof \Countable ? count($this->diffs) : 0;
                 for ($i = 1; $i <= $nb; $i++) {
                     if ($this->diffs[$i] == $diff) {
                         $d = $i;
@@ -657,7 +659,7 @@ if (! class_exists('FPDF')) {
                             $this->Error('Could not include font metric file');
                         }
                     }
-                    $i = count($this->fonts) + 1;
+                    $i = (is_array($this->fonts) || $this->fonts instanceof \Countable ? count($this->fonts) : 0) + 1;
                     $this->fonts[$fontkey] = [
                         'i' => $i,
                         'type' => 'core',
@@ -697,7 +699,7 @@ if (! class_exists('FPDF')) {
         public function AddLink()
         {
             //Create a new internal link
-            $n = count($this->links) + 1;
+            $n = (is_array($this->links) || $this->links instanceof \Countable ? count($this->links) : 0) + 1;
             $this->links[$n] = [0, 0];
             return $n;
         }
@@ -826,6 +828,7 @@ if (! class_exists('FPDF')) {
 
         public function MultiCell($w, $h, $txt, $border = 0, $align = 'J', $fill = 0)
         {
+            $ls = null;
             //Output text with automatic or explicit line breaks
             $cw = &$this->CurrentFont['cw'];
             if ($w == 0) {
@@ -1037,7 +1040,7 @@ if (! class_exists('FPDF')) {
                 if (function_exists('set_magic_quotes_runtime')) {
                     set_magic_quotes_runtime($mqr);
                 }
-                $info['i'] = count($this->images) + 1;
+                $info['i'] = (is_array($this->images) || $this->images instanceof \Countable ? count($this->images) : 0) + 1;
                 $this->images[$file] = $info;
             } else {
                 $info = $this->images[$file];
@@ -1202,8 +1205,8 @@ if (! class_exists('FPDF')) {
 
         public function _getfontpath()
         {
-            if (! defined('FPDF_FONTPATH') && is_dir(dirname(__FILE__) . '/font')) {
-                define('FPDF_FONTPATH', dirname(__FILE__) . '/font/');
+            if (! defined('FPDF_FONTPATH') && is_dir(__DIR__ . '/font')) {
+                define('FPDF_FONTPATH', __DIR__ . '/font/');
             }
             return defined('FPDF_FONTPATH') ? FPDF_FONTPATH : '';
         }
@@ -1397,7 +1400,7 @@ if (! class_exists('FPDF')) {
         {
             $filter = ($this->compress) ? '/Filter /FlateDecode ' : '';
             reset($this->images);
-            while (list($file, $info) = each($this->images)) {
+            foreach ($this->images as $file => $info) {
                 $this->_newobj();
                 $this->images[$file]['n'] = $this->n;
                 $this->_out('<</Type /XObject');
@@ -1640,7 +1643,7 @@ if (! class_exists('FPDF')) {
             } else {
                 $colspace = 'DeviceGray';
             }
-            $bpc = isset($a['bits']) ? $a['bits'] : 8;
+            $bpc = $a['bits'] ?? 8;
             //Read whole file
             $f = fopen($file, 'rb');
             $data = '';
@@ -1660,6 +1663,7 @@ if (! class_exists('FPDF')) {
 
         public function _parsepng($file)
         {
+            $colspace = null;
             //Extract info from a PNG file
             $f = fopen($file, 'rb');
             if (! $f) {

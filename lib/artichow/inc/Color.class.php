@@ -164,7 +164,7 @@ $colors = [
 $php = '';
 
 foreach ($colors as $name => $color) {
-    list($red, $green, $blue) = $color;
+    [$red, $green, $blue] = $color;
 
     $php .= '
 	class aw' . $name . ' extends awColor {
