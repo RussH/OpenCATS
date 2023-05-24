@@ -132,7 +132,7 @@ class SettingsUI extends UserInterface
             return;
         }
         $tags = new Tags($this->_siteID);
-        $arr = $tags->add((isset($_POST['tag_parent_id']) ? $_POST['tag_parent_id'] : null), $_POST['tag_title'], "-");
+        $arr = $tags->add(($_POST['tag_parent_id'] ?? null), $_POST['tag_title'], "-");
         if (isset($_POST['tag_parent_id'])) {
             printf(
                 '
@@ -2419,8 +2419,8 @@ class SettingsUI extends UserInterface
         $upgradeStatus = false;
 
         if (isset($_GET['webFormPostBack'])) {
-            list($fields, $errors) = $wf->getValidatedFields();
-            if (count($errors) > 0) {
+            [$fields, $errors] = str_split($wf->getValidatedFields());
+            if ((is_array($errors) || $errors instanceof \Countable ? count($errors) : 0) > 0) {
                 $message = 'Please enter a license key in order to continue.';
             }
 
@@ -2473,6 +2473,9 @@ class SettingsUI extends UserInterface
      */
     private function onChangePassword()
     {
+        $error = [];
+        $message = null;
+        $messageSuccess = null;
         $users = new Users($this->_siteID);
         if (AUTH_MODE == 'ldap' || AUTH_MODE == 'sql+ldap') {
             if ($users->isUserLDAP($this->_userID)) {
@@ -2650,6 +2653,7 @@ class SettingsUI extends UserInterface
      */
     private function viewItemHistory()
     {
+        $data = null;
         /* Bail out if we don't have a valid data item type. */
         if (! $this->isRequiredIDValid('dataItemType', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid data item type.');
@@ -2988,7 +2992,7 @@ class SettingsUI extends UserInterface
         // Echos Ok to redirect to the import stage, or Fail to go to home module
         $files = ImportUtility::getDirectoryFiles(FileUtility::getUploadPath($siteID, 'massimport'));
 
-        if (count($files)) {
+        if (is_array($files) || $files instanceof \Countable ? count($files) : 0) {
             echo 'Ok';
         } else {
             echo 'Fail';
@@ -3024,7 +3028,7 @@ class SettingsUI extends UserInterface
                 if (count($data = $questionnaire->get($questionnaireID))) {
                     $questions = $questionnaire->getQuestions($questionnaireID);
 
-                    for ($i = 0; $i < count($questions); $i++) {
+                    for ($i = 0; $i < (is_array($questions) || $questions instanceof \Countable ? count($questions) : 0); $i++) {
                         $questions[$i]['questionTypeLabel'] = $questionnaire->convertQuestionConstantToType(
                             $questions[$i]['questionType']
                         );
@@ -3118,7 +3122,7 @@ class SettingsUI extends UserInterface
          * answers that the user specified to remove as "remove" which will be done
          * in the final step to prevent index changes.
          */
-        for ($questionIndex = 0; $questionIndex < count($questions); $questionIndex++) {
+        for ($questionIndex = 0; $questionIndex < (is_array($questions) || $questions instanceof \Countable ? count($questions) : 0); $questionIndex++) {
             // Update the position of the question
             $field = sprintf('question%dPosition', $questionIndex);
             if (isset($_POST[$field])) {
@@ -3152,7 +3156,7 @@ class SettingsUI extends UserInterface
                 $questions[$questionIndex]['remove'] = false;
             }
 
-            for ($answerIndex = 0; $answerIndex < count($questions[$questionIndex]['answers']); $answerIndex++) {
+            for ($answerIndex = 0; $answerIndex < (is_array($questions[$questionIndex]['answers']) || $questions[$questionIndex]['answers'] instanceof \Countable ? count($questions[$questionIndex]['answers']) : 0); $answerIndex++) {
                 // Update the position of the question
                 $field = sprintf('question%dAnswer%dPosition', $questionIndex, $answerIndex);
                 if (isset($_POST[$field])) {
@@ -3272,7 +3276,7 @@ class SettingsUI extends UserInterface
             $questionTypeText = isset($_POST[$id = 'questionType']) ? $_POST[$id] : '';
 
             // Make sure the question doesn't already exist (re-submit)
-            for ($i = 0, $exists = false; $i < count($questions); $i++) {
+            for ($i = 0, $exists = false; $i < (is_array($questions) || $questions instanceof \Countable ? count($questions) : 0); $i++) {
                 if (! strcmp($questions[$i]['questionText'], $questionText)) {
                     $exists = true;
                 }
@@ -3295,7 +3299,7 @@ class SettingsUI extends UserInterface
             isset($questions[$restrictQuestionID])) {
             // Adding a new answer to an existing question
             $field = sprintf('question%dAnswerText', $restrictQuestionID);
-            $answerText = substr(trim(isset($_POST[$field]) ? $_POST[$field] : ''), 0, 255);
+            $answerText = substr(trim($_POST[$field] ?? ''), 0, 255);
 
             if (strlen($answerText)) {
                 $questions[$restrictQuestionID]['answers'][] = [
@@ -3343,7 +3347,7 @@ class SettingsUI extends UserInterface
          */
         $savedQuestions = [];
         for ($questionIndex = 0, $savedQuestionIndex = 0;
-            $questionIndex < count($questions);
+            $questionIndex < (is_array($questions) || $questions instanceof \Countable ? count($questions) : 0);
             $questionIndex++) {
             if (isset($questions[$questionIndex]['remove']) && $questions[$questionIndex]['remove']) {
                 continue;
@@ -3351,7 +3355,7 @@ class SettingsUI extends UserInterface
             $savedQuestions[$savedQuestionIndex] = $questions[$questionIndex];
             $savedQuestions[$savedQuestionIndex]['answers'] = [];
 
-            for ($answerIndex = 0; $answerIndex < count($questions[$questionIndex]['answers']); $answerIndex++) {
+            for ($answerIndex = 0; $answerIndex < (is_array($questions[$questionIndex]['answers']) || $questions[$questionIndex]['answers'] instanceof \Countable ? count($questions[$questionIndex]['answers']) : 0); $answerIndex++) {
                 if (isset($questions[$questionIndex]['answers'][$answerIndex]['remove']) &&
                     $questions[$questionIndex]['answers'][$answerIndex]['remove']) {
                     continue;
@@ -3371,7 +3375,7 @@ class SettingsUI extends UserInterface
          */
         for ($questionIndex = 0; $questionIndex < count($questions); $questionIndex++) {
             // If the question has no answers it is a TEXT automatically
-            if (! count($questions[$questionIndex]['answers'])) {
+            if (! (is_array($questions[$questionIndex]['answers']) || $questions[$questionIndex]['answers'] instanceof \Countable ? count($questions[$questionIndex]['answers']) : 0)) {
                 $questions[$questionIndex]['questionType'] = QUESTIONNAIRE_QUESTION_TYPE_TEXT;
                 $questions[$questionIndex]['questionTypeLabel'] =
                     $questionnaire->convertQuestionConstantToType(QUESTIONNAIRE_QUESTION_TYPE_TEXT);
@@ -3407,10 +3411,10 @@ class SettingsUI extends UserInterface
 
             // Bubble sort the answers for each question using the same method
             for ($answerIndex2 = 0;
-                $answerIndex2 < count($questions[$questionIndex2]['answers']) - 1;
+                $answerIndex2 < (is_array($questions[$questionIndex2]['answers']) || $questions[$questionIndex2]['answers'] instanceof \Countable ? count($questions[$questionIndex2]['answers']) : 0) - 1;
                 $answerIndex2++) {
                 for ($answerIndex3 = 0;
-                    $answerIndex3 < count($questions[$questionIndex2]['answers']) - 1;
+                    $answerIndex3 < (is_array($questions[$questionIndex2]['answers']) || $questions[$questionIndex2]['answers'] instanceof \Countable ? count($questions[$questionIndex2]['answers']) : 0) - 1;
                     $answerIndex3++) {
                     if (intval($questions[$questionIndex2]['answers'][$answerIndex3]['answerPosition']) >
                         intval($questions[$questionIndex2]['answers'][$answerIndex3 + 1]['answerPosition'])) {
@@ -3430,7 +3434,7 @@ class SettingsUI extends UserInterface
             $questions[$questionIndex2]['questionPosition'] = $questionIndex2 + 1;
 
             for ($answerIndex2 = 0;
-                $answerIndex2 < count($questions[$questionIndex2]['answers']);
+                $answerIndex2 < (is_array($questions[$questionIndex2]['answers']) || $questions[$questionIndex2]['answers'] instanceof \Countable ? count($questions[$questionIndex2]['answers']) : 0);
                 $answerIndex2++) {
                 $questions[$questionIndex2]['answers'][$answerIndex2]['answerPosition'] = ($answerIndex2 + 1);
             }

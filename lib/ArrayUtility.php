@@ -60,7 +60,7 @@ class ArrayUtility
         $slicedArray = [];
 
         /* Get the last offset of $pieces). */
-        $lastPiecesOffset = count($pieces) - 1;
+        $lastPiecesOffset = (is_array($pieces) || $pieces instanceof \Countable ? count($pieces) : 0) - 1;
 
         /* If the last index the user wants is not the last index of the array,
          * we need to slice the array from both sides.

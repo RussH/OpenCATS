@@ -326,7 +326,7 @@ class BrowserDetection
 
             return [
                 'name' => 'OmniWeb',
-                'version' => (isset($b[1]) ? $b[1] : 'Unknown'),
+                'version' => ($b[1] ?? 'Unknown'),
             ];
         }
 

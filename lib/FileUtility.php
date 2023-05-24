@@ -225,7 +225,7 @@ class FileUtility
          * already exists is small, we need to handle it just in case.
          */
         do {
-            $md5 = md5(rand() . time() . $extraData);
+            $md5 = md5(random_int(0, mt_getrandmax()) . time() . $extraData);
         } while (file_exists($basePath . $md5));
 
         return $md5;
@@ -239,7 +239,7 @@ class FileUtility
      */
     public static function makeRandomFilename($padding = '')
     {
-        return md5($padding . time() . mt_rand()) . mt_rand(0, 9);
+        return md5($padding . time() . random_int(0, mt_getrandmax())) . random_int(0, 9);
     }
 
     /**

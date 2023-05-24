@@ -92,6 +92,7 @@ class ReportsUI extends UserInterface
 
     private function reports()
     {
+        $statisticsData = [];
         /* Grab an instance of Statistics. */
         $statistics = new Statistics($this->_siteID);
 
@@ -250,8 +251,7 @@ class ReportsUI extends UserInterface
             /* Querys inside loops are bad, but I don't think there is any avoiding this. */
             $submissionJobOrdersRS[$rowIndex]['submissionsRS'] = $statistics->getSubmissionsByJobOrder(
                 $period,
-                $submissionJobOrdersData['jobOrderID'],
-                $this->_siteID
+                $submissionJobOrdersData['jobOrderID']
             );
         }
 
@@ -328,8 +328,7 @@ class ReportsUI extends UserInterface
             /* Querys inside loops are bad, but I don't think there is any avoiding this. */
             $placementsJobOrdersRS[$rowIndex]['placementsRS'] = $statistics->getPlacementsByJobOrder(
                 $period,
-                $placementsJobOrdersData['jobOrderID'],
-                $this->_siteID
+                $placementsJobOrdersData['jobOrderID']
             );
         }
 
@@ -344,6 +343,7 @@ class ReportsUI extends UserInterface
 
     private function customizeJobOrderReport()
     {
+        $reportParameters = [];
         /* Bail out if we don't have a valid candidate ID. */
         if (! $this->isRequiredIDValid('jobOrderID', $_GET)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this, 'Invalid job order ID.');

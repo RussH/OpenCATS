@@ -47,7 +47,7 @@ fwrite($stdout, "2007 Cognizo Technologies\n\n");
 
 
 if (isset($_SERVER['argv'][1])) {
-    $CATSHome = realpath(dirname(__FILE__) . '/../');
+    $CATSHome = realpath(__DIR__ . '/../');
     chdir($CATSHome);
 
     include_once('./config.php');
@@ -78,10 +78,10 @@ function makeBackup($siteID, $backupType = BACKUP_TAR, $logFile = null)
 
     $db = DatabaseConnection::getInstance();
 
-    $random = rand();
+    $random = random_int(0, mt_getrandmax());
     $i = 0;
     while (file_exists('scripts/backup/' . $random) && $i++ < 30000) {
-        $random = rand();
+        $random = random_int(0, mt_getrandmax());
     }
     if (file_exists('scripts/backup/' . $random)) {
         fwrite($stderr, "Unable to create temporary directory.\n");

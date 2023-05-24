@@ -752,7 +752,7 @@ class TemplateUtility
         echo '</body>', "\n";
         echo '</html>', "\n";
 
-        if (LicenseUtility::isProfessional() && ! rand(0, 10)) {
+        if (LicenseUtility::isProfessional() && ! random_int(0, 10)) {
             if (! LicenseUtility::validateProfessionalKey(LICENSE_KEY)) {
                 CATSUtility::changeConfigSetting('LICENSE_KEY', "''");
             }
@@ -854,6 +854,7 @@ class TemplateUtility
      */
     public static function getRatingsArrayJS()
     {
+        $ratingsQuoted = [];
         $ratings = self::_getRatingImages();
 
         $HTML = '<script type="text/javascript">';

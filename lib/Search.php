@@ -70,7 +70,7 @@ class SearchUtility
         $ranges = [];
         $included = [];
         $length = 0;
-        while ($length < SEARCH_EXCERPT_LENGTH && count($workingKeys)) {
+        while ($length < SEARCH_EXCERPT_LENGTH && (is_array($workingKeys) || $workingKeys instanceof \Countable ? count($workingKeys) : 0)) {
             foreach ($workingKeys as $keyOffset => $key) {
                 if ($length >= SEARCH_EXCERPT_LENGTH) {
                     break;

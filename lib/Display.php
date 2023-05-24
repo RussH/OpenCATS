@@ -120,7 +120,7 @@ class Display
     public function endTable()
     {
         $pageContent = $this->getTemplate('page');
-        list($pageTopContent, $pageBottomContent) = explode('<sections>', $pageContent);
+        [$pageTopContent, $pageBottomContent] = explode('<sections>', $pageContent);
 
         $sectionContent = $this->getTemplate(
             'pageSection',
@@ -128,7 +128,7 @@ class Display
                 'sectionWidth' => $this->_profilePage['columnWidth'],
             ]
         );
-        list($sectionTopContent, $sectionBottomContent) = explode('<columns>', $sectionContent);
+        [$sectionTopContent, $sectionBottomContent] = explode('<columns>', $sectionContent);
 
         $columnContent = $this->getTemplate('pageColumn');
 
@@ -140,7 +140,7 @@ class Display
         echo $pageTopContent;
 
         for ($fieldIndex = 0, $curColumn = -1, $inSection = false;
-            $fieldIndex < count($fields);
+            $fieldIndex < (is_array($fields) || $fields instanceof \Countable ? count($fields) : 0);
             $fieldIndex++) {
             $field = $fields[$fieldIndex];
 

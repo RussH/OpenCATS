@@ -695,7 +695,7 @@ class CandidatesUI extends UserInterface
 
         /* Get passed variables. */
         $preassignedFields = $_GET;
-        if (count($fields) > 0) {
+        if ((is_array($fields) || $fields instanceof \Countable ? count($fields) : 0) > 0) {
             $preassignedFields = array_merge($preassignedFields, $fields);
         }
 
@@ -2357,6 +2357,7 @@ class CandidatesUI extends UserInterface
      */
     private function _addCandidate($isModal, $directoryOverride = '')
     {
+        $attachmentCreated = null;
         /* Module directory override for fatal() calls. */
         if ($directoryOverride != '') {
             $moduleDirectory = $directoryOverride;
@@ -3241,12 +3242,12 @@ class CandidatesUI extends UserInterface
         $search = new SearchCandidates($this->_siteID);
         switch ($mode) {
             case 'searchByCandidateName':
-                $rs = $search->byFullName($query, 'candidate.last_name', 'ASC', true);
+                $rs = $search->byFullName($query, 'candidate.last_name', 'ASC');
                 $resultsMode = true;
                 break;
 
             default:
-                $rs = $search->all($query, 'candidate.last_name', 'ASC', 'true');
+                $rs = $search->all($query, 'candidate.last_name', 'ASC');
                 $resultsMode = false;
                 break;
         }

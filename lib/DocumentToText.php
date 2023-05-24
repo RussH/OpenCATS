@@ -75,6 +75,7 @@ class DocumentToText
      */
     public function convert($fileName, $documentType)
     {
+        $filename = null;
         /* (Re?)initialize variables. */
         $this->_linesArray = [];
         $this->_linesString = '';

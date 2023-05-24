@@ -221,6 +221,8 @@ class Tags
      */
     public function AddTagsToCandidate($candidateID, $tagIDs)
     {
+        $values = [];
+        $queryResult = null;
         if (is_array($tagIDs)) {
             foreach ($tagIDs as $t) {
                 $values[] = sprintf(

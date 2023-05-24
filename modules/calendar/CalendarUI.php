@@ -276,6 +276,8 @@ class CalendarUI extends UserInterface
      */
     private function dynamicData()
     {
+        $month = null;
+        $year = null;
         /* Do we have a valid date argument? If a month was specified and
          * isn't valid, fatal() out. If none was specified, use the current
          * month.

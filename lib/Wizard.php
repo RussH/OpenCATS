@@ -94,7 +94,7 @@ class Wizard
      */
     public function doModal()
     {
-        if (! isset($_SESSION['CATS_WIZARD']) || ! count($_SESSION['CATS_WIZARD']['pages'])) {
+        if (! isset($_SESSION['CATS_WIZARD']) || ! (is_array($_SESSION['CATS_WIZARD']['pages']) || $_SESSION['CATS_WIZARD']['pages'] instanceof \Countable ? count($_SESSION['CATS_WIZARD']['pages']) : 0)) {
             return;
         }
         CATSUtility::transferRelativeURI('m=wizard');

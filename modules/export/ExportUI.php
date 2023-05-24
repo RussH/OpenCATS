@@ -72,6 +72,7 @@ class ExportUI extends UserInterface
      */
     public function onExport()
     {
+        $IDs = [];
         $filename = 'export.csv';
 
         /* Bail out if we don't have a valid data item type. */

@@ -140,6 +140,7 @@ class GraphsUI extends UserInterface
 
     private function jobOrderReportGraph()
     {
+        $colorArray = [];
         /* Build X values. */
         $data = $this->getTrimmedInput('data', $_GET);
         if (! empty($data)) {
@@ -447,6 +448,7 @@ class GraphsUI extends UserInterface
 
     private function miniJobOrderPipeline()
     {
+        $x = [];
         $statistics = new Statistics($this->_siteID);
         if (! $this->isRequiredIDValid('params', $_GET)) {
             die();

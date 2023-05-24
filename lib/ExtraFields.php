@@ -865,7 +865,7 @@ class ExtraFields
     {
         $extraFields = $this->_getValuesWithSettings($dataItemID);
 
-        for ($i = 0; $i < count($extraFields); $i++) {
+        for ($i = 0; $i < (is_array($extraFields) || $extraFields instanceof \Countable ? count($extraFields) : 0); $i++) {
             if (isset($_POST['extraField' . $i]) && $extraFields[$i]['value'] != $_POST['extraField' . $i]) {
                 $this->setValue($extraFields[$i]['fieldName'], $_POST['extraField' . $i], $dataItemID);
             }

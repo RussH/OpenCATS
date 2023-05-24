@@ -358,21 +358,23 @@ class WebForm
      */
     private function validateFields()
     {
+        $monthValue = null;
+        $yearValue = null;
         $errors = [];
         for ($x = 0; $x < count($this->_fields); $x++) {
             $field = $this->_fields[$x];
             if ($field['type'] == WFT_CC_EXPIRATION) {
                 // one or both fields left blank
-                if (strlen(trim($this->getPostValue($field['id'] . 'Month'))) == 0 ||
-                    strlen(trim($this->getPostValue($field['id'] . 'Year'))) == 0) {
+                if (strlen(trim(static::getPostValue($field['id'] . 'Month'))) == 0 ||
+                    strlen(trim(static::getPostValue($field['id'] . 'Year'))) == 0) {
                     if ($field['required']) {
                         $errors[] = 'You must select an card expiration month and year';
                     }
                     $monthValue = $yearValue = -1;
                     $value = '';
                 } else {
-                    $monthValue = intval($this->getPostValue($field['id'] . 'Month'));
-                    $yearValue = intval($this->getPostValue($field['id'] . 'Year'));
+                    $monthValue = intval(static::getPostValue($field['id'] . 'Month'));
+                    $yearValue = intval(static::getPostValue($field['id'] . 'Year'));
                     $curYear = intval(date('Y'));
                     if ($yearValue < $curYear) {
                         $errors[] = 'The expiration year is in the past';
@@ -381,7 +383,7 @@ class WebForm
                         $errors[] = 'The expiration month is not valid';
                     }
                 }
-            } elseif ($field['required'] && ! strlen(trim($this->getPostValue($field['id'])))) {
+            } elseif ($field['required'] && ! strlen(trim(static::getPostValue($field['id'])))) {
                 if (strlen($field['caption']) > 0) {
                     $errors[] = $field['caption'] . ' is a required field';
                 } else {
@@ -389,13 +391,13 @@ class WebForm
                 }
                 $value = '';
             } elseif ($field['type'] == WFT_CURRENCY) {
-                $value = trim($this->getPostValue($field['id']));
+                $value = trim(static::getPostValue($field['id']));
                 $value = str_replace('$', '', $value);
                 $cur = floatval($value);
                 $value = strval($cur);
             } elseif ($field['type'] == WFT_ANTI_SPAM_IMAGE) {
-                $antiSpamInput = $this->getPostValue($field['id']);
-                $wordVerifyID = $this->getPostValue('wordVerifyID');
+                $antiSpamInput = static::getPostValue($field['id']);
+                $wordVerifyID = static::getPostValue('wordVerifyID');
                 $graphs = new Graphs();
                 $wordVerifyText = $graphs->getVerificationImageText($wordVerifyID);
                 if (strtoupper($antiSpamInput) != $wordVerifyText || $antiSpamInput == '') {
@@ -406,14 +408,14 @@ class WebForm
                 }
                 $graphs->clearVerificationImageText($wordVerifyID);
             } elseif ($field['type'] == WFT_SELECT || $field['type'] == WFT_CC_TYPE || $field['type'] == WFT_BOOLEAN) {
-                $value = $this->getPostValue($field['id']);
+                $value = static::getPostValue($field['id']);
                 if (! strcmp($value, 'noset')) {
                     $errors[] = $field['caption'] . ': You must select an option';
                 }
             } elseif ($field['type'] == WFT_CC_NUMBER) {
                 $value = '';
                 // Clean credit card number input
-                $cardNumber = preg_replace('/[^0-9]/', '', $this->getPostValue($field['id']));
+                $cardNumber = preg_replace('/[^0-9]/', '', static::getPostValue($field['id']));
 
                 if ($field['required'] == false && ! strlen($cardNumber)) {
                     $value = '';
@@ -440,7 +442,7 @@ class WebForm
                     }
                 }
             } else {
-                $value = trim($this->getPostValue($field['id']));
+                $value = trim(static::getPostValue($field['id']));
 
                 if (! ($field['required'] == false && ! strlen($value))) {
                     if (strlen($field['regex_test']) > 0) {
@@ -511,7 +513,7 @@ class WebForm
         }
 
         // if this is a post back where the fields have been completed and need to be validated/populated
-        if (! strcmp($this->getPostValue('webFormPostBack'), '1')) {
+        if (! strcmp(static::getPostValue('webFormPostBack'), '1')) {
             // the fields have received input
             $this->validateFields();
         }
@@ -731,8 +733,9 @@ class WebForm
      */
     public function getFieldInput($field, $options = '')
     {
+        $input = null;
         $onblur = $onmouseover = $onmouseout = $onkeyup = $onclick = '';
-        if (count($field['html']) > 0) {
+        if ((is_array($field['html']) || $field['html'] instanceof \Countable ? count($field['html']) : 0) > 0) {
             if (isset($field['html']['onblur'])) {
                 $onblur = $field['html']['onblur'] . ' ';
             }

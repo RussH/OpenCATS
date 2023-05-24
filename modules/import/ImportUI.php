@@ -197,7 +197,7 @@ class ImportUI extends UserInterface
         $import = new Import($this->_siteID);
         $data = $import->getAll();
 
-        if (count($data) == 0) {
+        if ((is_array($data) || $data instanceof \Countable ? count($data) : 0) == 0) {
             $this->import();
         } else {
             if (! eval(Hooks::get('IMPORT_VIEW_PENDING'))) {
@@ -327,7 +327,7 @@ class ImportUI extends UserInterface
         $attachments = new Attachments($this->_siteID);
         $bulk = $attachments->getBulkAttachmentsInfo();
 
-        if (count($data) > 0) {
+        if ((is_array($data) || $data instanceof \Countable ? count($data) : 0) > 0) {
             $this->_template->assign('pendingCommits', true);
         }
 
@@ -642,7 +642,7 @@ class ImportUI extends UserInterface
         $matchingFields = [];
 
         foreach ($theFields as $theField) {
-            for ($i = 0; $i < count($types); $i += 2) {
+            for ($i = 0; $i < (is_array($types) || $types instanceof \Countable ? count($types) : 0); $i += 2) {
                 $lField = trim(strtolower($theField));
                 $lType = strtolower($types[$i]);
 
@@ -746,7 +746,7 @@ class ImportUI extends UserInterface
         $contents = fread($theFile, filesize($filePath));
         rewind($theFile); //move pointer to the beginning of file so fgetcsv can read it too
 
-        if (defined('IMPORT_FILE_ENCODING') && count(IMPORT_FILE_ENCODING) > 0) {
+        if (defined('IMPORT_FILE_ENCODING') && (is_array(IMPORT_FILE_ENCODING) || IMPORT_FILE_ENCODING instanceof \Countable ? count(IMPORT_FILE_ENCODING) : 0) > 0) {
             $encoding = mb_detect_encoding($contents, IMPORT_FILE_ENCODING);
         } else {
             $encoding = mb_detect_encoding($contents, mb_detect_order());
@@ -848,7 +848,7 @@ class ImportUI extends UserInterface
 
             /* Put the data where the user picked for it to go. */
             foreach ($theFieldPreference as $fieldID => $theFieldPreferenceValue) {
-                if (count($theData) <= $fieldID || trim($theData[$fieldID]) == '') {
+                if (($theData === null ? 0 : count($theData)) <= $fieldID || trim($theData[$fieldID]) == '') {
                     continue;
                 }
 
@@ -944,7 +944,7 @@ class ImportUI extends UserInterface
                 $errorHtml .= '&nbsp;Record # ' . $totalRows . ': ' . $result . '<br />';
                 $errorHtml .= '<span id="errorId' . $totalRows . '" style="display:none;">';
                 foreach ($theFields as $fieldID => $theField) {
-                    if (count($theData) > $fieldID) {
+                    if (($theData === null ? 0 : count($theData)) > $fieldID) {
                         $errorHtml .= '<span class="bold">' . htmlspecialchars($theField) . ':</span> ' . htmlspecialchars($theData[$fieldID]) . '<br />';
                     }
                 }
@@ -989,7 +989,7 @@ class ImportUI extends UserInterface
 
         /* Send off to the import template. */
         $this->_template->assign('successMessage', $message);
-        $this->import(strtolower($importInto));
+        $this->import();
     }
 
    /*
@@ -1382,14 +1382,15 @@ class ImportUI extends UserInterface
 
     public function massImportEdit()
     {
+        $documentID = null;
         if (isset($_GET['documentID'])) {
             $documentID = intval($_GET['documentID']);
         } else {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
 
-        list($documents, $success, $failed) = $this->getMassImportDocuments();
-        if (! count($documents)) {
+        [$documents, $success, $failed] = $this->getMassImportDocuments();
+        if (! (is_array($documents) || $documents instanceof \Countable ? count($documents) : 0)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
 
@@ -1464,6 +1465,7 @@ class ImportUI extends UserInterface
 
     public function massImport($step = 1)
     {
+        $siteID = null;
         if (isset($_SESSION['CATS']) && ! empty($_SESSION['CATS'])) {
             $siteID = $_SESSION['CATS']->getSiteID();
         } else {
@@ -1553,8 +1555,8 @@ class ImportUI extends UserInterface
             }
         } elseif ($step == 3) {
             // Make sure the processed files exists, is an array, and is not empty
-            list($documents, $success, $failed) = $this->getMassImportDocuments();
-            if (! count($documents)) {
+            [$documents, $success, $failed] = $this->getMassImportDocuments();
+            if (! (is_array($documents) || $documents instanceof \Countable ? count($documents) : 0)) {
                 $this->_template->assign(
                     'errorMessage',
                     'None of the files you uploaded were able '
@@ -1565,11 +1567,11 @@ class ImportUI extends UserInterface
             $this->_template->assign('documents', $documents);
         } elseif ($step == 4) {
             // Final step, import all applicable candidates
-            list($importedCandidates, $importedDocuments, $importedFailed, $importedDuplicates) =
+            [$importedCandidates, $importedDocuments, $importedFailed, $importedDuplicates] =
                 $this->getMassImportCandidates();
 
-            if (! count($importedCandidates) && ! count($importedDocuments) && ! count($importedFailed) &&
-                ! count($importedDuplicates)) {
+            if (! (is_array($importedCandidates) || $importedCandidates instanceof \Countable ? count($importedCandidates) : 0) && ! (is_array($importedDocuments) || $importedDocuments instanceof \Countable ? count($importedDocuments) : 0) && ! (is_array($importedFailed) || $importedFailed instanceof \Countable ? count($importedFailed) : 0) &&
+                ! (is_array($importedDuplicates) || $importedDuplicates instanceof \Countable ? count($importedDuplicates) : 0)) {
                 $this->_template->assign(
                     'errorMessage',
                     '<b style="font-size: 20px;">Information no Longer '
@@ -1620,6 +1622,8 @@ class ImportUI extends UserInterface
 
     private function getMassImportCandidates()
     {
+        $siteID = null;
+        $userID = null;
         $db = DatabaseConnection::getInstance();
 
         // Find the files the user has uploaded and put them in an array
@@ -1630,8 +1634,8 @@ class ImportUI extends UserInterface
             CommonErrors::fatal(COMMONERROR_NOTLOGGEDIN, $this);
         }
 
-        list($documents, $success, $failed) = $this->getMassImportDocuments();
-        if (! count($documents)) {
+        [$documents, $success, $failed] = $this->getMassImportDocuments();
+        if (! (is_array($documents) || $documents instanceof \Countable ? count($documents) : 0)) {
             return [[], [], [], []];
         }
 
@@ -1640,11 +1644,11 @@ class ImportUI extends UserInterface
         $importedFailed = [];
         $importedDuplicates = [];
 
-        for ($ind = 0; $ind < count($_SESSION['CATS_PARSE_TEMP']); $ind++) {
+        for ($ind = 0; $ind < (is_array($_SESSION['CATS_PARSE_TEMP']) || $_SESSION['CATS_PARSE_TEMP'] instanceof \Countable ? count($_SESSION['CATS_PARSE_TEMP']) : 0); $ind++) {
             $doc = $_SESSION['CATS_PARSE_TEMP'][$ind];
 
             // Get parsed information instead (if available)
-            for ($ind2 = 0; $ind2 < count($documents); $ind2++) {
+            for ($ind2 = 0; $ind2 < (is_array($documents) || $documents instanceof \Countable ? count($documents) : 0); $ind2++) {
                 if ($documents[$ind2]['id'] == $ind) {
                     $doc = $documents[$ind2];
                 }
@@ -2003,7 +2007,7 @@ class ImportUI extends UserInterface
         $attachments = new Attachments($this->_siteID);
         $bulkResumes = $attachments->getBulkAttachments();
 
-        if (! count($bulkResumes)) {
+        if (! (is_array($bulkResumes) || $bulkResumes instanceof \Countable ? count($bulkResumes) : 0)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
 
@@ -2032,7 +2036,7 @@ class ImportUI extends UserInterface
         $attachments = new Attachments($this->_siteID);
         $bulkResumes = $attachments->getBulkAttachments();
 
-        if (! count($bulkResumes)) {
+        if (! (is_array($bulkResumes) || $bulkResumes instanceof \Countable ? count($bulkResumes) : 0)) {
             CommonErrors::fatal(COMMONERROR_BADINDEX, $this);
         }
 

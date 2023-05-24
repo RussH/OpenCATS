@@ -701,6 +701,7 @@ class Statistics
 
     public function getEEOReport($modePeriod, $modeStatus)
     {
+        $statistics = [];
         switch ($modePeriod) {
             case 'month':
                 $periodChriterion = 'AND TO_DAYS(candidate.date_modified) >= TO_DAYS(DATE_SUB(CURDATE(), INTERVAL 1 MONTH))';

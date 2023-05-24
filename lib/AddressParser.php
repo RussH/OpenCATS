@@ -115,7 +115,7 @@ class AddressParser
          */
         $cityStateZipLineArray = [-1, ''];
         foreach ($reversedAddressBlock as $lineNumber => $line) {
-            if ($this->_isCityStateZip($line)) {
+            if (static::_isCityStateZip($line)) {
                 $cityStateZipLineArray = [$lineNumber, $line];
                 break;
             }
@@ -142,7 +142,7 @@ class AddressParser
          * If there is an address line three, we ignore it.
          */
         if ($addressOneLineOffset >= 0 &&
-            count($this->_addressBlock) > ($addressOneLineOffset + 1) &&
+            (is_array($this->_addressBlock) || $this->_addressBlock instanceof \Countable ? count($this->_addressBlock) : 0) > ($addressOneLineOffset + 1) &&
             ($addressOneLineOffset + 1) != $cityStateZipLineArray[0]) {
             $this->_addressLineTwo = $this->_addressBlock[$addressOneLineOffset + 1];
         }
@@ -342,6 +342,7 @@ class AddressParser
 
     protected function _getFullNameArray($addressOneLineOffset)
     {
+        $fullNameArray = [];
         /* Safe default values. */
         $fullNameArray['firstName'] = '';
         $fullNameArray['middleName'] = '';

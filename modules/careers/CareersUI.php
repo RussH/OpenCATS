@@ -68,6 +68,19 @@ class CareersUI extends UserInterface
 
     private function careersPage()
     {
+        $firstName = null;
+        $lastName = null;
+        $email1 = null;
+        $phoneHome = null;
+        $phoneCell = null;
+        $phoneWork = null;
+        $address = null;
+        $city = null;
+        $state = null;
+        $zip = null;
+        $keySkills = null;
+        $currentEmployer = null;
+        $bestTimeToCall = null;
         global $careerPage;
 
         /* Get information on what site we are in, our environment, etc. */
@@ -117,12 +130,12 @@ class CareersUI extends UserInterface
         $useCookie = true;
 
         // Get the get or post page request
-        $p = isset($_GET['p']) ? $_GET['p'] : '';
-        $p = isset($_POST['p']) ? $_POST['p'] : $p;
+        $p = $_GET['p'] ?? '';
+        $p = $_POST['p'] ?? $p;
 
         // Get the get or post sub-page request
-        $pa = isset($_GET['pa']) ? $_GET['pa'] : '';
-        $pa = isset($_POST['pa']) ? $_POST['pa'] : $pa;
+        $pa = $_GET['pa'] ?? '';
+        $pa = $_POST['pa'] ?? $pa;
 
         $isRegistrationEnabled = $careerPortalSettingsRS['candidateRegistration'];
 
@@ -145,7 +158,7 @@ class CareersUI extends UserInterface
         if ($p == 'showAll') {
             $template['Content'] = $template['Content - Search Results'];
 
-            $template['Content'] = str_replace('<numberOfSearchResults>', count($rs), $template['Content']);
+            $template['Content'] = str_replace('<numberOfSearchResults>', is_array($rs) || $rs instanceof \Countable ? count($rs) : 0, $template['Content']);
             $template['Content'] = str_replace('<registeredCandidate>', $useCookie && $isRegistrationEnabled ? $this->getRegisteredCandidateBlock($siteID, $template['Content - Candidate Registration']) : '', $template['Content']);
 
             if ($careerPortalSettingsRS['allowBrowse'] == 1) {
@@ -234,7 +247,7 @@ class CareersUI extends UserInterface
                 '<form name="updateForm" id="updateForm" enctype="multipart/form-data" method="post" '
                 . 'action="%s?m=careers&p=onRegisteredCandidateProfile&attachmentID=%d">',
                 CATSUtility::getIndexName(),
-                $latestAttachment ? $latestAttachment : -1
+                $latestAttachment ?: -1
             ) . $content . '</form>'
             . (isset($_GET[$id = 'isPostBack']) && ! strcmp($_GET[$id], 'yes') ? '<script language="javascript" type="text/javascript">setTimeout(\'alert("Your changes have been saved!")\',25);</script>' : '');
 
@@ -357,7 +370,7 @@ class CareersUI extends UserInterface
                 $content
             );
 
-            if (count($fields = $this->getCookieFields($siteID))) {
+            if (is_array($fields = $this->getCookieFields($siteID)) || ($fields = $this->getCookieFields($siteID)) instanceof \Countable ? count($fields = $this->getCookieFields($siteID)) : 0) {
                 $js = '<script language="javascript" type="text/javascript">' . "\n"
                     . 'function populateSavedFields() { var obj; obj = document.getElementById(\'isNewNo\'); '
                     . 'if (obj) { obj.checked = true; enableFormFields(true); } ' . "\n";
@@ -488,7 +501,7 @@ class CareersUI extends UserInterface
                     // Check if the resume contents need to be parsed (user clicked parse contents button)
                     if (LicenseUtility::isParsingEnabled()) {
                         $pu = new ParseUtility();
-                        $fileName = isset($uploadFile) ? $uploadFile : '';
+                        $fileName = $uploadFile ?? '';
                         $res = $pu->documentParse($fileName, strlen($resumeContents), '', $resumeContents);
                         if (is_array($res) && ! empty($res)) {
                             if (isset($res[$id = 'first_name']) && $res[$id] != '' && $firstName == '') {
@@ -529,7 +542,7 @@ class CareersUI extends UserInterface
 
             // Force integer
             // FIXME: Input validation, and use isRequiredIDValid() to check for / force integer.
-            $jobID = intval(isset($_GET['ID']) ? $_GET['ID'] : $_POST['ID']);
+            $jobID = intval($_GET['ID'] ?? $_POST['ID']);
 
             $jobOrderData = $jobOrders->get($jobID);
             if (! isset($jobOrderData['public']) || $jobOrderData['public'] == 0) {
@@ -880,7 +893,7 @@ class CareersUI extends UserInterface
             $template[$index] = str_replace('<a-LinkSearch>', '<a href="' . $indexName . '?m=careers' . (isset($_GET['templateName']) ? '&templateName=' . urlencode($_GET['templateName']) : '') . '&amp;p=search">', $template[$index]);
             $template[$index] = str_replace('<a-ListAll>', '<a href="' . $indexName . '?m=careers' . (isset($_GET['templateName']) ? '&templateName=' . urlencode($_GET['templateName']) : '') . '&amp;p=showAll">', $template[$index]);
             $template[$index] = str_replace('<siteName>', $siteName, $template[$index]);
-            $template[$index] = str_replace('<numberOfOpenPositions>', count($rs), $template[$index]);
+            $template[$index] = str_replace('<numberOfOpenPositions>', is_array($rs) || $rs instanceof \Countable ? count($rs) : 0, $template[$index]);
 
             /* Hacks for loading from a nonstandard root directory. */
             if (isset($careerPage) && $careerPage == true) {
@@ -1100,6 +1113,8 @@ class CareersUI extends UserInterface
     /* Called by Careers Page function to handle the processing of candidate input. */
     private function onApplyToJobOrder($siteID, $candidateID = false)
     {
+        $duplicatesOccurred = null;
+        $resumePath = null;
         $jobOrders = new JobOrders($siteID);
         $careerPortalSettings = new CareerPortalSettings($siteID);
 
@@ -1337,7 +1352,7 @@ class CareersUI extends UserInterface
 
         /* Is the candidate already in the pipeline for this job order? */
         $rs = $pipelines->get($candidateID, $jobOrderID);
-        if (count($rs) == 0) {
+        if ((is_array($rs) || $rs instanceof \Countable ? count($rs) : 0) == 0) {
             /* Attempt to add the candidate to the pipeline. */
             if (! $pipelines->add($candidateID, $jobOrderID)) {
                 CommonErrors::fatal(COMMONERROR_RECORDERROR, $this, 'Failed to add candidate to job order.');
@@ -1585,7 +1600,7 @@ class CareersUI extends UserInterface
         // Get a list of candidate fields to compare against
         $sql = 'SHOW COLUMNS FROM candidate';
         $columns = $db->getAllAssoc($sql);
-        for ($i = 0; $i < count($columns); $i++) {
+        for ($i = 0; $i < (is_array($columns) || $columns instanceof \Countable ? count($columns) : 0); $i++) {
             // Convert out of _ notation to camel notation
             $columns[$i]['CamelField'] = str_replace('_', '', $columns[$i]['Field']);
         }
@@ -1649,7 +1664,7 @@ class CareersUI extends UserInterface
         // Check if there's a cookie to prefill the fields with
         if (isset($_COOKIE[$id = $this->getCareerPortalCookieName($siteID)])) {
             if (preg_match_all('/"([^"]+)"="([^"]*)"/', $_COOKIE[$id], $matches) > 0) {
-                for ($i = 0; $i < count($matches[1]); $i++) {
+                for ($i = 0; $i < (is_array($matches[1]) || $matches[1] instanceof \Countable ? count($matches[1]) : 0); $i++) {
                     $fields[urldecode($matches[1][$i])] = urldecode($matches[2][$i]);
                     // Some fields have multiple meanings:
                     if (! strcmp($matches[1][$i], 'email1')) {

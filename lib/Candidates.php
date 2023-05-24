@@ -690,7 +690,7 @@ class Candidates
     // FIXME: Document me.
     public function getExport($IDs)
     {
-        if (count($IDs) != 0) {
+        if ((is_array($IDs) || $IDs instanceof \Countable ? count($IDs) : 0) != 0) {
             $IDsValidated = [];
 
             foreach ($IDs as $id) {
@@ -1405,7 +1405,7 @@ class Candidates
 
         $rsTmp = $this->_db->getAllAssoc($sql);
 
-        if ($rsTmp || count($rsTmp) > 0) {
+        if ($rsTmp || ($rsTmp === null ? 0 : count($rsTmp)) > 0) {
             foreach ($rsTmp as $index => $newID) {
                 $sql = sprintf(
                     "DELETE FROM
@@ -1595,6 +1595,7 @@ class Candidates
 
     private function mergeLists($oldCandidateID, $newCandidateID)
     {
+        $lists = null;
         /* Get list IDs where both old and new candidate already are placed */
         $sql = sprintf(
             "
@@ -1619,7 +1620,7 @@ class Candidates
         );
 
         $rsTmp = $this->_db->getAllAssoc($sql);
-        if ($rsTmp && count($rsTmp) > 0) {
+        if ($rsTmp && (is_array($rsTmp) || $rsTmp instanceof \Countable ? count($rsTmp) : 0) > 0) {
             $listIDs = "";
             foreach ($rsTmp as $row) {
                 $listIDs .= $row['listID'];
@@ -1709,7 +1710,7 @@ class Candidates
         );
 
         $rsTmp = $this->_db->getAllAssoc($sql);
-        if ($rsTmp && count($rsTmp) > 0) {
+        if ($rsTmp && (is_array($rsTmp) || $rsTmp instanceof \Countable ? count($rsTmp) : 0) > 0) {
             $jobOrderIDs = "";
             foreach ($rsTmp as $row) {
                 $jobOrderIDs .= $row['jobOrderID'];

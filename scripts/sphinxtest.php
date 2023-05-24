@@ -12,7 +12,7 @@ error_reporting(E_ERROR);
 /* This is probably getting called from cron, so we have to figure out
  * where we are and where CATS is.
  */
-$CATSHome = realpath(dirname(__FILE__) . '/../');
+$CATSHome = realpath(__DIR__ . '/../');
 include(realpath($CATSHome . '/config.php'));
 
 if (php_sapi_name() == 'cli') {

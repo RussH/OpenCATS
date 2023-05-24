@@ -392,13 +392,13 @@ class Pager
             /* $i+2, because every pair of records indicates the first and
              * last entry on a page.
              */
-            for ($i = 0; $i < count($rsNav); $i += 2) {
+            for ($i = 0; $i < (is_array($rsNav) || $rsNav instanceof \Countable ? count($rsNav) : 0); $i += 2) {
                 $output = '';
 
                 /* If no corresponding 2nd entry, make one (1 entry on last
                  * page for example).
                  */
-                if (count($rsNav) == $i + 1) {
+                if ((is_array($rsNav) || $rsNav instanceof \Countable ? count($rsNav) : 0) == $i + 1) {
                     $rsNav[$i + 1] = $rsNav[$i];
                 }
 
@@ -410,7 +410,7 @@ class Pager
                 /* If it is the last entry, go to the first or last letter
                  * in the alphabet.
                  */
-                if (count($rsNav) == $i + 2) {
+                if ((is_array($rsNav) || $rsNav instanceof \Countable ? count($rsNav) : 0) == $i + 2) {
                     if ($sortDirection == 'ASC') {
                         $lastChar = ord('Z');
                     } else {

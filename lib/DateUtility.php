@@ -95,6 +95,10 @@ class DateUtility
      */
     public static function convert($separator, $date, $fromFormat, $toFormat)
     {
+        $dateFormat = null;
+        $month = null;
+        $day = null;
+        $year = null;
         /* Extract the three date fields. */
         $dateFields = explode($separator, $date);
 
@@ -158,6 +162,9 @@ class DateUtility
      */
     public static function validate($separator, $dateString, $format)
     {
+        $month = null;
+        $day = null;
+        $year = null;
         /* Make sure the string is numeric except for separators. */
         if (! ctype_digit((string) str_replace($separator, '', $dateString))) {
             return false;
@@ -383,6 +390,7 @@ class DateUtility
      */
     public static function getFormattedDuration($seconds, $short = false, $round = false)
     {
+        $segments = [];
         $abbreviations = [
             'year' => 'yr',
             'week' => 'wk',

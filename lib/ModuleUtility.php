@@ -186,6 +186,7 @@ class ModuleUtility
      */
     private static function _refreshModuleList()
     {
+        $modulesCache = null;
         /* Modules array looks like this:
          *
          * $modules = array(

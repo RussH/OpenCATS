@@ -953,7 +953,7 @@ class CompaniesUI extends UserInterface
 
             case 'searchByKeyTechnologies':
                 $wildCardKeyTechnologies = $query;
-                $rs = $search->byKeyTechnologies($query, $sortBy, $sortDirection);
+                $rs = $search->byKeyTechnologies($query);
                 break;
 
             default:

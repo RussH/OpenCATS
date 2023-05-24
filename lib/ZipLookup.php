@@ -11,6 +11,8 @@ class ZipLookup
 
     public function getCityStateByZip($zip)
     {
+        $aAddress = [];
+        $loc_level_4 = null;
         $aAddress[0] = 0;
         $aAddress[1] = '';
         $aAddress[2] = '';

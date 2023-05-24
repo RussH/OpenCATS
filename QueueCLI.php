@@ -31,7 +31,7 @@
  * $Id: QueueCLI.php 3555 2007-11-11 22:34:51Z will $
  */
 
-$CATSHome = realpath(dirname(__FILE__) . '/');
+$CATSHome = realpath(__DIR__ . '/');
 
 chdir($CATSHome);
 

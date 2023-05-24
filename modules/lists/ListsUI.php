@@ -142,6 +142,7 @@ class ListsUI extends UserInterface
 
     private function showList()
     {
+        $dataGridInstance = null;
         /* Bail out if we don't have a valid candidate ID. */
         if (! $this->isRequiredIDValid('savedListID', $_GET)) {
             CommonErrors::fatalModal(COMMONERROR_BADINDEX, $this);

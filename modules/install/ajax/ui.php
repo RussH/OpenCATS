@@ -500,7 +500,7 @@ switch ($action) {
 
         echo '<script type="text/javascript">setActiveStep(3);</script>';
 
-        if (count($tables) == 0) {
+        if ((is_array($tables) || $tables instanceof \Countable ? count($tables) : 0) == 0) {
             echo '<script type="text/javascript">
                       showTextBlock(\'emptyDatabase\');
                       document.getElementById(\'emptyCheckBox\').checked = true;
@@ -746,7 +746,7 @@ switch ($action) {
         MySQLConnect();
 
         /* This shouldn't be possible - there is no option to upgrade CATS if no tables are in the database. */
-        if (count($tables) == 0) {
+        if ((is_array($tables) || $tables instanceof \Countable ? count($tables) : 0) == 0) {
             echo 'Error - no schema present.<br /><br /> ';
             echo '<input type="button" class="button" value="Retry Installation" onclick="Installpage_populate(\'a=detectConnectivity\', \'subFormBlock\', \'Checking database connectivity...\');">&nbsp;&nbsp;&nbsp;';
             die();

@@ -1373,6 +1373,7 @@ class DataGrid
          */
         public function draw($noOverflow = false)
         {
+            $_keys_current_columns = null;
             /* Get data. */
             $this->_getData();
 

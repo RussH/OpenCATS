@@ -33,6 +33,7 @@ include_once(LEGACY_ROOT . '/lib/SavedLists.php');
 
 function isRequiredValueValid($value)
 {
+    $allowZero = null;
     $value = (string) $value;
 
     /* Return false if the key is empty, or if the key is zero and

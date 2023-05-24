@@ -78,7 +78,7 @@ class HashUtility
             }
 
             // FIXME: Should this be in machine byte order, or always little endian?
-            list(, $hash) = unpack('V', $rawHash);
+            [, $hash] = unpack('V', $rawHash);
             return $hash;
         }
 

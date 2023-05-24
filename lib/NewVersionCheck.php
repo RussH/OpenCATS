@@ -65,7 +65,7 @@ class NewVersionCheck
                 $randMax = 100000000;
             }
 
-            $systemInfo['uid'] = mt_rand(1, $randMax);
+            $systemInfo['uid'] = random_int(1, $randMax);
             $systemInfoDb->updateUID($systemInfo['uid']);
         }
 

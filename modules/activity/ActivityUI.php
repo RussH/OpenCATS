@@ -272,6 +272,7 @@ class ActivityUI extends UserInterface
      */
     private function getQuickLinks()
     {
+        $quickLinks = [];
         $today = [
             'month' => date('n'),
             'day' => date('j'),

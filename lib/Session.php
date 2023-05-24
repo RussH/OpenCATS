@@ -1024,8 +1024,8 @@ class CATSSession
             $this->_startTime = $this->_endTime;
         }
 
-        list($a_dec, $a_sec) = explode(' ', $this->_startTime);
-        list($b_dec, $b_sec) = explode(' ', $this->_endTime);
+        [$a_dec, $a_sec] = explode(' ', $this->_startTime);
+        [$b_dec, $b_sec] = explode(' ', $this->_endTime);
 
         $duration = $b_sec - $a_sec + $b_dec - $a_dec;
         $duration = sprintf('%0.2f', $duration);

@@ -95,6 +95,7 @@ class CBFUtility
 
     public function doScanTable($tableName)
     {
+        $primaryKey = null;
         $hasSiteID = false;
         $tableStructure = [];
 
@@ -153,7 +154,7 @@ class CBFUtility
         $result = [];
         foreach ($this->_structure as $tableName => $tableData) {
             $foreignKeys = $this->getForeignKeys($tableData);
-            if (count($foreignKeys) == $allowedKeys) {
+            if ((is_array($foreignKeys) || $foreignKeys instanceof \Countable ? count($foreignKeys) : 0) == $allowedKeys) {
                 $result[$tableName] = $tableData;
             }
         }
@@ -385,7 +386,9 @@ class CBFUtility
 
     private function restoreTableDataBackup($tableName, $tableStructure, $tableData)
     {
-        $numFields = count($tableStructure);
+        $dataType = null;
+        $data = null;
+        $numFields = is_array($tableStructure) || $tableStructure instanceof \Countable ? count($tableStructure) : 0;
         $numRows = array_pop(unpack('N1', substr($tableData, 0, $size = 4)));
         $tableData = substr($tableData, $size);
 
@@ -585,7 +588,7 @@ class CBFUtility
             // Get info for the first table
             $tableInfoSize = array_pop(unpack('N1', fread($fp, 4)));
             $data = fread($fp, $tableInfoSize);
-            list($tableName, $tableStructure) = $this->restoreTableInfoBackup($data);
+            [$tableName, $tableStructure] = $this->restoreTableInfoBackup($data);
 
             $tableDataSize = array_pop(unpack('N1', fread($fp, 4)));
             $data = fread($fp, $tableDataSize);

@@ -441,7 +441,7 @@ class License
     protected function packScramble($byteString)
     {
         for ($i = 0; $i < LICENSE_STRING_SIZE; $i++) {
-            if (rand(0, 1)) {
+            if (random_int(0, 1)) {
                 $byteString[$i] = $this->setScrambleBitByte(
                     $byteString[$i],
                     true
@@ -470,7 +470,7 @@ class License
         $key = strtoupper($key);
         for ($i = 0; $i < strlen($key); $i++) {
             $char = ord(strtoupper($key[$i]));
-            for ($i2 = 0; $i2 < count($schema); $i2 += 2) {
+            for ($i2 = 0; $i2 < (is_array($schema) || $schema instanceof \Countable ? count($schema) : 0); $i2 += 2) {
                 $firstChar = ord(strtoupper($schema[$i2]));
                 $secondChar = ord(strtoupper($schema[$i2 + 1]));
                 if ($char == $firstChar) {

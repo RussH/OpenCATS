@@ -49,8 +49,8 @@ class Reminders extends Task
 
     public function run($siteID, $args)
     {
-        Task::setName('Calendar Reminders');
-        Task::setDescription('Send out reminder e-mails from the CATS calendar.');
+        parent::setName('Calendar Reminders');
+        parent::setDescription('Send out reminder e-mails from the CATS calendar.');
 
         $calendar = new Calendar(0);
 

@@ -453,6 +453,7 @@ class StringUtility
      */
     public static function tokenize($splitCharacters, $string)
     {
+        $tokens = [];
         $tokenIndex = 0;
 
         $tokens[$tokenIndex] = strtok($string, $splitCharacters);
