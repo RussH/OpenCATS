@@ -19,7 +19,6 @@ return function (ECSConfig $ecsConfig): void {
         __DIR__ . '/scripts',
         __DIR__ . '/src',
         __DIR__ . '/test',
-        __DIR__ . '/tools',
         __DIR__ . '/xml',
     ]);
 

@@ -11,15 +11,15 @@ return static function (RectorConfig $rectorConfig): void {
         '/var/www/html/OpenCATS',
     ]);
 
-// skip rules
+    // skip rules
     $rectorConfig->skip([
         // paths
         '/var/www/html/OpenCATS/vendor',
-        '/var/www/html/OpenCATS/ci',
-        '/var/www/html/OpenCATS/db',
-        'var/www/html/OpenCATS/docker',
-        'var/www/html/OpenCATS/test',
-        'var/www/html/OpenCATS/src',
+//        '/var/www/html/OpenCATS/ci',
+//        '/var/www/html/OpenCATS/db',
+//        'var/www/html/OpenCATS/docker',
+//        'var/www/html/OpenCATS/test',
+//        'var/www/html/OpenCATS/src',
         '/var/www/html/OpenCATS/lib/artichow',
         '/var/www/html/OpenCATS/lib/fpdf',
         '/var/www/html/OpenCATS/lib/simpletest',
@@ -29,10 +29,10 @@ return static function (RectorConfig $rectorConfig): void {
 
     // rule sets
     $rectorConfig->sets([
-//        SetList::EARLY_RETURN,
-//        SetList::DEAD_CODE,
-//        SetList::CODE_QUALITY,
-//        SetList::CODING_STYLE,
-          LevelSetList::UP_TO_PHP_72,
+        //        SetList::EARLY_RETURN,
+        //        SetList::DEAD_CODE,
+        //        SetList::CODE_QUALITY,
+        //        SetList::CODING_STYLE,
+        LevelSetList::UP_TO_PHP_72,
     ]);
 };

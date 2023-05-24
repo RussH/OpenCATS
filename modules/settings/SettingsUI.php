@@ -3025,7 +3025,7 @@ class SettingsUI extends UserInterface
             // If questionairreID is provided, this is an edit
             if ($questionnaireID != '') {
                 $questionnaire = new Questionnaire($this->_siteID);
-                if (count($data = $questionnaire->get($questionnaireID))) {
+                if (is_array($data = $questionnaire->get($questionnaireID)) || ($data = $questionnaire->get($questionnaireID)) instanceof \Countable ? count($data = $questionnaire->get($questionnaireID)) : 0) {
                     $questions = $questionnaire->getQuestions($questionnaireID);
 
                     for ($i = 0; $i < (is_array($questions) || $questions instanceof \Countable ? count($questions) : 0); $i++) {
@@ -3489,7 +3489,7 @@ class SettingsUI extends UserInterface
         $questionnaire = new Questionnaire($this->_siteID);
         $data = $questionnaire->getAll(true);
 
-        for ($i = 0; $i < count($data); $i++) {
+        for ($i = 0; $i < (is_array($data) || $data instanceof \Countable ? count($data) : 0); $i++) {
             if (isset($_POST[$id = 'removeQuestionnaire' . $i]) &&
                 ! strcasecmp($_POST[$id], 'yes')) {
                 $questionnaire->delete($data[$i]['questionnaireID']);

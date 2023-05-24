@@ -60,7 +60,7 @@ $output =
     "<data>\n" .
     "    <errorcode>0</errorcode>\n" .
     "    <errormessage></errormessage>\n" .
-    "    <totalelements>" . count($companiesArray) . "</totalelements>\n";
+    "    <totalelements>" . (is_array($companiesArray) || $companiesArray instanceof \Countable ? count($companiesArray) : 0) . "</totalelements>\n";
 
 $arrayCounter = 0;
 foreach ($companiesArray as $rowIndex => $row) {
