@@ -59,7 +59,7 @@ class awAntiSpam extends awImage
         $number = strlen($letters);
 
         for ($i = 0; $i < $length; $i++) {
-            $this->string .= $letters{random_int(0, $number - 1)};
+            $this->string .= $letters[random_int(0, $number - 1)];
         }
 
         return $this->string;
@@ -116,7 +116,7 @@ class awAntiSpam extends awImage
         return (
             array_key_exists($session, $_SESSION) === true and
             $case ?
-                (strtolower($_SESSION[$session]) === strtolower((string) $value)) :
+                (strtolower((string) $_SESSION[$session]) === strtolower((string) $value)) :
                 ($_SESSION[$session] === (string) $value)
         );
     }
@@ -149,7 +149,7 @@ class awAntiSpam extends awImage
             );
 
             $text = new awText(
-                $this->string{$i},
+                $this->string[$i],
                 $font,
                 null,
                 random_int(-15, 15)

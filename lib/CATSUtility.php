@@ -75,16 +75,16 @@ class CATSUtility
         /* Remove anything after (and including) the first space from the
          * version data.
          */
-        $spacePosition = strpos($versionString, ' ');
+        $spacePosition = strpos((string) $versionString, ' ');
         if ($spacePosition !== false) {
-            $versionString = substr($versionString, 0, $spacePosition);
+            $versionString = substr((string) $versionString, 0, $spacePosition);
         }
 
         /* Multiply each version part (Major.Minor.Patchlevel) by a constant
          * to create an integer in which newer versions are always greater
          * mathematically than older versions.
          */
-        $versionIntegers = explode('.', $versionString);
+        $versionIntegers = explode('.', (string) $versionString);
         $versionInteger = $versionIntegers[0] * 10000;
         $versionInteger += $versionIntegers[1] * 100;
         $versionInteger += $versionIntegers[2] * 1;
@@ -106,7 +106,7 @@ class CATSUtility
         $data = @file_get_contents('.svn/entries');
 
         /* XML Data? */
-        if ($data{0} === '<') {
+        if ($data[0] === '<') {
             $xml = @simplexml_load_string($data);
             if (! $xml || ! isset($xml->entry[0]['committed-rev'])) {
                 return 0;
@@ -118,7 +118,7 @@ class CATSUtility
         /* If the data is not XML, there is a version number at the first
          * character of the string. We can handle versions 7 and 8.
          */
-        if ((int) $data{0} > 6 && (int) $data{0} < 9) {
+        if ((int) $data[0] > 6 && (int) $data[0] < 9) {
             /* Return the text between the end of the first "dir" line and
              * the next linefeed.
              */
@@ -152,7 +152,7 @@ class CATSUtility
 
         $newconfig = [];
         foreach ($config as $index => $line) {
-            if (strpos($line, 'define(\'' . $name . '\'') === 0) {
+            if (str_starts_with($line, 'define(\'' . $name . '\'')) {
                 $newconfig[] = sprintf("define('%s', %s);", $name, $value);
             } else {
                 $newconfig[] = rtrim($line);
@@ -191,7 +191,7 @@ class CATSUtility
 
         $newParameters = [];
         foreach ($getVars as $name => $value) {
-            $newParameters[] = urlencode($name) . '=' . urlencode($value);
+            $newParameters[] = urlencode($name) . '=' . urlencode((string) $value);
         }
 
         return implode($separator, $newParameters);
@@ -210,14 +210,14 @@ class CATSUtility
     {
         //FIXME: This causes problems on IIS. Check forums for reporters. bradoyler and one more...
         if (! isset($_SERVER['HTTPS']) || empty($_SERVER['HTTPS']) ||
-            strtolower($_SERVER['HTTPS']) != 'on') {
+            strtolower((string) $_SERVER['HTTPS']) != 'on') {
             $absoluteURI = 'http://';
         } else {
             $absoluteURI = 'https://';
         }
 
         $absoluteURI .= $_SERVER['HTTP_HOST']
-            . str_replace('\\', '/', dirname($_SERVER['PHP_SELF'])) . '/';
+            . str_replace('\\', '/', dirname((string) $_SERVER['PHP_SELF'])) . '/';
 
         // This breaks stuff. FIXME http://www.catsone.com/bugs/?do=details&task_id=72
         // if (!eval(Hooks::get('CATS_UTILITY_GET_INDEX_URL'))) return;
@@ -252,7 +252,7 @@ class CATSUtility
      *
      * @param string URL.
      */
-    public static function transferURL($URL)
+    public static function transferURL($URL): never
     {
         session_write_close();
 
@@ -270,7 +270,7 @@ class CATSUtility
     {
         // FIXME: Make this work with ajax.php
 
-        $parts = explode('/', $_SERVER['PHP_SELF']);
+        $parts = explode('/', (string) $_SERVER['PHP_SELF']);
 
         unset($parts[count($parts) - 1]);
 
@@ -292,7 +292,7 @@ class CATSUtility
             return 'index.php';
         }
 
-        $parts = explode('/', $_SERVER['PHP_SELF']);
+        $parts = explode('/', (string) $_SERVER['PHP_SELF']);
         $index = end($parts);
 
         /* Handle ajax.php. */
@@ -316,7 +316,7 @@ class CATSUtility
      */
     public static function getDirectoryName()
     {
-        $parts = explode('/', $_SERVER['PHP_SELF']);
+        $parts = explode('/', (string) $_SERVER['PHP_SELF']);
         unset($parts[count($parts) - 1]);
 
         $directory = implode('/', $parts);
@@ -334,7 +334,7 @@ class CATSUtility
      */
     public static function getNonSSLIndexURL()
     {
-        $parts = explode('/', $_SERVER['PHP_SELF']);
+        $parts = explode('/', (string) $_SERVER['PHP_SELF']);
         unset($parts[count($parts) - 1]);
 
         $parts[] = self::getIndexName();
@@ -365,7 +365,7 @@ class CATSUtility
 
         // FIXME: Document / clean up cut top dir stuff.
         if ($cutTopDir) {
-            $dirs = explode('/', $_SERVER['PHP_SELF']);
+            $dirs = explode('/', (string) $_SERVER['PHP_SELF']);
             $path = '/' . implode('/', array_slice($dirs, 1, -2)) . '/' . implode('/', array_slice($dirs, -1, 1));
         } else {
             $path = $_SERVER['PHP_SELF'];
@@ -402,7 +402,7 @@ class CATSUtility
      */
     public static function isSSL()
     {
-        if (isset($_SERVER['HTTPS']) && strtolower($_SERVER['HTTPS']) == 'on') {
+        if (isset($_SERVER['HTTPS']) && strtolower((string) $_SERVER['HTTPS']) == 'on') {
             return true;
         }
 
