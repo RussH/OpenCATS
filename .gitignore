@@ -3,6 +3,7 @@ INSTALL_BLOCK
 .project
 .settings/*
 docker/data/*
+config.php
 docker/persist/*
 vendor/*
 attachments/*
@@ -12,3 +13,5 @@ temp/*
 /vendor/
 *.diff
 *.rej
+
+config.php
