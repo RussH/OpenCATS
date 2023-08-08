@@ -38,10 +38,8 @@ include_once(LEGACY_ROOT . '/lib/Width.php');
 
 class ActivityDataGrid extends DataGrid
 {
-    protected $_siteID;
-
     // FIXME: Fix ugly indenting - ~400 character lines = bad.
-    public function __construct($siteID, $parameters)
+    public function __construct(protected $_siteID, $parameters)
     {
         /* Pager configuration. */
         $this->_tableWidth = new Width(100, '%');
@@ -100,7 +98,6 @@ class ActivityDataGrid extends DataGrid
         ];
 
         $this->_db = DatabaseConnection::getInstance();
-        $this->_siteID = $siteID;
         $this->_assignedCriterion = "";
         $this->_dataItemIDColumn = 'company.company_id';
 
@@ -286,13 +283,13 @@ class ActivityDataGrid extends DataGrid
             DATA_ITEM_CANDIDATE,
             $this->_siteID,
             $this->dateCriterion,
-            (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
+            (strlen((string) $whereSQL) > 0) ? ' AND ' . $whereSQL : '',
             $distinct,
             DATA_ITEM_CONTACT,
             $this->_siteID,
             $this->dateCriterion,
-            (strlen($whereSQL) > 0) ? ' AND ' . $whereSQL : '',
-            (strlen($havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
+            (strlen((string) $whereSQL) > 0) ? ' AND ' . $whereSQL : '',
+            (strlen((string) $havingSQL) > 0) ? ' HAVING ' . $havingSQL : '',
             $orderSQL,
             $limitSQL
         );

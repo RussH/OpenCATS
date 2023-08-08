@@ -38,10 +38,10 @@ class ActivityUI extends UserInterface
     /* Maximum number of characters of a line in the regarding field to show
      * on the main listing.
      */
-    public const TRUNCATE_REGARDING = 24;
+    final public const TRUNCATE_REGARDING = 24;
 
     /* Maximum number of characters to display of an activity note. */
-    public const ACTIVITY_NOTE_MAXLEN = 140;
+    final public const ACTIVITY_NOTE_MAXLEN = 140;
 
     public function __construct()
     {
@@ -142,29 +142,13 @@ class ActivityUI extends UserInterface
         $periodString = $this->getTrimmedInput('period', $_GET);
         if (! empty($periodString) &&
             in_array($periodString, ['lastweek', 'lastmonth', 'lastsixmonths', 'lastyear', 'all'])) {
-            /* formats start and end date for searching */
-            switch ($periodString) {
-                case 'lastweek':
-                    $period = 'DATE_SUB(CURDATE(), INTERVAL 1 WEEK)';
-                    break;
-
-                case 'lastmonth':
-                    $period = 'DATE_SUB(CURDATE(), INTERVAL 1 MONTH)';
-                    break;
-
-                case 'lastsixmonths':
-                    $period = 'DATE_SUB(CURDATE(), INTERVAL 6 MONTH)';
-                    break;
-
-                case 'lastyear':
-                    $period = 'DATE_SUB(CURDATE(), INTERVAL 1 YEAR)';
-                    break;
-
-                case 'all':
-                default:
-                    $period = '';
-                    break;
-            }
+            $period = match ($periodString) {
+                'lastweek' => 'DATE_SUB(CURDATE(), INTERVAL 1 WEEK)',
+                'lastmonth' => 'DATE_SUB(CURDATE(), INTERVAL 1 MONTH)',
+                'lastsixmonths' => 'DATE_SUB(CURDATE(), INTERVAL 6 MONTH)',
+                'lastyear' => 'DATE_SUB(CURDATE(), INTERVAL 1 YEAR)',
+                default => '',
+            };
 
             $startDate = '';
             $endDate = '';
